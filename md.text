@@ -1,0 +1,38 @@
+卷 资料 的文件夹 PATH 列表
+卷序列号为 B2C6-8A34
+E:.
+│  .gitignore
+│  .yarnrc
+│  index.html
+│  md.text
+│  package.json
+│  README.md
+│  tsconfig.json
+│  tsconfig.node.json
+│  vite.config.ts
+│  yarn-error.log
+│  yarn.lock
+│  
+├─electron-main
+│      index.ts
+│      
+├─electron-preload
+│      index.ts
+│      
+├─public
+│      favicon.ico
+│      
+└─src
+    │  App.vue
+    │  env.d.ts
+    │  main.ts
+    │  
+    ├─assets
+    │      logo.png
+    │      
+    ├─components
+    │      HelloWorld.vue
+    │      
+    └─types
+            global.d.ts
+            
