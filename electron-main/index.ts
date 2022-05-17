@@ -1,14 +1,12 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, Menu, Tray } from "electron";
 import path from "path";
 
 const createWindow = () => {
   const win = new BrowserWindow({
     webPreferences: {
-      /**
-       * 上下文隔离功能将确保您的 预加载脚本 和 Electron的内部逻辑 运行在所加载的 webcontent网页 之外的另一个独立的上下文环境里。
-       * 这对安全性很重要，因为它有助于阻止网站访问 Electron 的内部组件 和 您的预加载脚本可访问的高等级权限的API 。
-       */
-      // contextIsolation:false, // 这里不能设置为false
+      webSecurity: false,
+      nodeIntegration: true,
+      // contextIsolation:false, // 这里不能设置为falsewebSecurity: false
       preload: path.join(__dirname, "../electron-preload/index.js"), //需要注意引入的预加载文件应该是打包后的 js 文件
     },
   });
@@ -22,10 +20,9 @@ const createWindow = () => {
     win.loadURL(url);
   }
 };
-
+let tray = null;
 app.whenReady().then(() => {
   createWindow();
-
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
@@ -37,4 +34,21 @@ app.whenReady().then(() => {
       app.quit();
     }
   });
+
+  /**
+   * 这里开始初始化其它功能
+   */
+  // createTray();
 });
+
+// function createTray() {
+//   tray = new Tray('public/favicon.ico')
+//   const contextMenu = Menu.buildFromTemplate([
+//     { label: 'Item1', type: 'radio' },
+//     { label: 'Item2', type: 'radio' },
+//     { label: 'Item3', type: 'radio', checked: true },
+//     { label: 'Item4', type: 'radio' }
+//   ])
+//   tray.setToolTip('This is my application.')
+//   tray.setContextMenu(contextMenu)
+// }

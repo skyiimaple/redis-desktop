@@ -15,7 +15,6 @@ export default defineConfig({
         entry: "electron-main/index.ts",
       },
       preload: {
-        // Must be use absolute path, this is the limit of rollup
         input: path.join(__dirname, "./electron-preload/index.ts"),
       },
     }),

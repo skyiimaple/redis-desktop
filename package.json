@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "electron-builder":"rimraf dist && vite build && electron-builder"
+    "electron-build":"rimraf dist && vite build && electron-builder"
   },
   "dependencies": {
     "vue": "^3.2.25"
