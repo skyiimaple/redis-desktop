@@ -49,4 +49,8 @@ code {
   border-radius: 4px;
   color: #304455;
 }
+
+h1{
+  text-align: center;
+}
 </style>
