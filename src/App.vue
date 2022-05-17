@@ -5,13 +5,19 @@ import HelloWorld from './components/HelloWorld.vue';
 console.log(window.electron);
 
 const electron = window.electron;
-electron.doThing()
+const {doThing,shell} =electron;
 
+function openGithub(){
+  shell.openExternal('https://github.com')
+}
 </script>
 
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld :msg="`Hello Vue 3 + TypeScript + Vite in ${electron.platform}`" />
+  <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
+  <button @click="openGithub">打开github</button>
+  <button @click="electron.doThing('createSuspensionMenu')">打开菜单</button>
+  <button @click="electron.doThing('createSuspensionMenu')">test</button>
+  <HelloWorld :msg="`Hello Electron + Vue 3 + TypeScript + Vite in ${electron.platform}`" />
 </template>
 
 
