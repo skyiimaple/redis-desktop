@@ -32,9 +32,10 @@ const createWindow = () => {
     // win.loadURL('https://crmtestb.kungeek.com/');
   } else {
     // 🚧 Use ['ENV_NAME'] avoid vite:define plugin
-    const url = `http://${process.env["VITE_DEV_SERVER_HOST"]}:${process.env["VITE_DEV_SERVER_PORT"]}`;
+    // const url = `http://${process.env["VITE_DEV_SERVER_HOST"]}:${process.env["VITE_DEV_SERVER_PORT"]}`;
 
-    win.loadURL(url);
+    // win.loadURL(url);
+    win.loadURL('http://localhost:4200');
   }
 };
 app.whenReady().then(() => {
