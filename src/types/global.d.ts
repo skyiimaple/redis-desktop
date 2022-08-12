@@ -1,9 +1,10 @@
 export interface IElectronAPI {
-  platform: string;
-  doThing: Function;
-  shell: any;
-  toggle: Function;
-  system: Function;
+  platform?: string;
+  doThing?: Function;
+  shell?: any;
+  toggle?: Function;
+  system?: Function;
+  Redis?: Redis
 }
 export interface DarkModeAPI {
   toggle: Function;
