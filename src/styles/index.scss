@@ -1,0 +1,31 @@
+// @import 'element-plus/dist/index.css';
+@import 'element-plus/theme-chalk/el-message.css';
+
+div,
+p,
+ul,
+li,
+span,
+html,
+body {
+  box-sizing: border-box;
+}
+
+ul,
+li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rv-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rv-flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
