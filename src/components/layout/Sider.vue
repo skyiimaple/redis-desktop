@@ -2,13 +2,14 @@
 import { ElMessage } from "element-plus";
 import Redis from "ioredis";
 import { onBeforeMount, reactive, ref, toRaw } from "vue";
+import RedisServer from "../../redis/RedisServer";
 import CommonUtils from "../../utils/utils";
 import TreeList from "../TreeList.vue";
 
 const activeNames = ref('1');
 const signColor = '#409eff'
 // console.log(window);
-const redisMpas: any = reactive({});
+const redisMpas: any = reactive([]);
 const createConnect = () => {
   const params = {
     host: '81.71.45.213',
@@ -16,27 +17,28 @@ const createConnect = () => {
     name: 'mblog',
     password: '1821maple@'
   }
-  const redis = new Redis(params);
-  const redisData = {
-    auth: "1821maple@",
-    cluster: false,
-    color: "#85CE61",
-    connectionName: "blog ",
-    connectionReadOnly: false,
-    host: "81.71.45.213",
-    key: "1659929184658_ni39b",
-    name: "blog ",
-    order: "1",
-    port: 6379,
-    separator: ":",
-    username: "",
-  }
-  redisMpas[params.name] = redis;
-  localStorage.setItem('connections', JSON.stringify(toRaw(redisMpas)));
-  console.log('redis :>> ', redis.options);
-  redis.keys('*key*').then(key => {
-    console.log('redis.keys :>> ', key);
-  })
+  redisMpas.push(RedisServer.createRedis(params));
+  // const redis = new Redis(params);
+  // const redisData = {
+  //   auth: "1821maple@",
+  //   cluster: false,
+  //   color: "#85CE61",
+  //   connectionName: "blog ",
+  //   connectionReadOnly: false,
+  //   host: "81.71.45.213",
+  //   key: "1659929184658_ni39b",
+  //   name: "blog ",
+  //   order: "1",
+  //   port: 6379,
+  //   separator: ":",
+  //   username: "",
+  // }
+  // redisMpas[params.name] = redis;
+  // localStorage.setItem('connections', JSON.stringify(toRaw(redisMpas)));
+  // console.log('redis :>> ', redis.options);
+  // redis.keys('*key*').then(key => {
+  //   console.log('redis.keys :>> ', key);
+  // })
 }
 
 const creatRandomNumber = () => {
@@ -45,12 +47,10 @@ const creatRandomNumber = () => {
 }
 
 onBeforeMount(() => {
-  const redis = JSON.parse(localStorage.getItem('connections') || '');
-  if (redis) {
-    for (const key in redis) {
-      if (Object.prototype.hasOwnProperty.call(redis, key)) {
-        redisMpas[key] = redis[key];
-      }
+  RedisServer.initConnectMaps();
+  for (const key in RedisServer.connectMaps) {
+    if (Object.prototype.hasOwnProperty.call(RedisServer.connectMaps, key)) {
+      redisMpas.push(RedisServer.connectMaps[key]);
     }
   }
 })
@@ -64,10 +64,10 @@ onBeforeMount(() => {
   <el-divider style="margin: 10px 0 0;" />
   <div>
     <el-collapse v-model="activeNames" accordion>
-      <el-collapse-item class="collapse-item" :name="index" v-for="(data, key, index) of redisMpas">
+      <el-collapse-item class="collapse-item" :name="index" v-for="(data, index) of redisMpas">
         <template #title>
           <div class="title-template">
-            <span class="title-text">{{ data.options.name }}</span>
+            <span class="title-text">{{ data.name }}</span>
             <el-space style="font-size: 16px;">
               <div title="Redis信息" class="rv-flex">
                 <HomeFilled class="el-icon" @click.stop="creatRandomNumber" />
