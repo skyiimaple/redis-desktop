@@ -1,5 +1,4 @@
-// @import 'element-plus/dist/index.css';
-@import 'element-plus/theme-chalk/el-message.css';
+@import 'element-plus/dist/index.css';
 
 div,
 p,
@@ -16,6 +15,11 @@ li {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+
+.rv-full-width {
+  width: 100%;
 }
 
 .rv-flex {

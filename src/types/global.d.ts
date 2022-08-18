@@ -17,3 +17,13 @@ declare global {
     darkMode: DarkModeAPI;
   }
 }
+export interface RedisData {
+  host?: string;
+  key: string;
+  name?: string;
+  port?: number | string;
+  separator: string;
+  order?: string;
+  auth?: string;
+  color?: string;
+}

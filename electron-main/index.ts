@@ -1,30 +1,25 @@
 import {
   app,
   BrowserWindow,
-  dialog,
   ipcMain,
-  Menu,
   nativeTheme,
-  Notification,
-  Tray,
 } from "electron";
 import path from "path";
-import { spawn, exec, execSync } from "child_process";
-import { RedisServer } from "./redis/redis-server";
+import WinState from "./win-state";
 
 const createWindow = () => {
   // 添加log
   // let userDataDir = app.getPath("userData");
   // Log.transports.file.file = userDataDir + "/logs/info.log";
-  const gotTheLock = app.requestSingleInstanceLock();
-  if (!gotTheLock) {
-    app.quit();
-  }
+  // const gotTheLock = app.requestSingleInstanceLock();
+  // if (!gotTheLock) {
+  //   app.quit();
+  // }
+  const { x = 0, y = 0, width = 1300, height = 700, maximized = true } = WinState.getLastState();
   const win = new BrowserWindow({
-    width: 1300,
-    height: 700,
-    // useContentSize: true,
-    // frame: false, //要创建无边框窗口
+    x, y,
+    width: width < 300 ? 1300 : width,
+    height: height < 300 ? 700 : height,
     // transparent: true, // 窗口是否支持透明
     icon: path.join(__dirname, "../favicon.ico"),
     // autoHideMenuBar: true,
@@ -33,9 +28,13 @@ const createWindow = () => {
       webSecurity: true,
       nodeIntegration: true,
       // preload: path.join(__dirname, "../electron-preload/index.js"), //需要注意引入的预加载文件应该是打包后的 js 文件
-      contextIsolation: false, // 这里不能设置为false 
+      contextIsolation: false, // 如果需要执行preload 这里不能设置为false 
     },
   });
+  if (maximized) {
+    win.maximize();
+  }
+  WinState.watchState(win);
 
   if (app.isPackaged) {
     win.loadFile(path.join(__dirname, "../index.html"));
@@ -48,6 +47,10 @@ const createWindow = () => {
     // win.loadURL('http://localhost:4200');
     win.webContents.openDevTools();
   }
+  win.on('close', () => {
+    win.webContents.send('closingWindow');
+  });
+
 };
 app.whenReady().then(() => {
   createWindow();
@@ -62,7 +65,6 @@ app.whenReady().then(() => {
       app.quit();
     }
   });
-  console.log('123 :>> ', 123);
 
   /**
    * 这里开始初始化其它功能
@@ -79,26 +81,6 @@ function setEvent() {
       nativeTheme.themeSource = "dark";
     }
     return nativeTheme.shouldUseDarkColors;
-  });
-
-  ipcMain.handle("dark-mode:system", () => {
-    nativeTheme.themeSource = "system";
-  });
-
-  ipcMain.on("createDialog", (e, { title, content, type }) => {
-    // const note = new Notification({ title: "通知", body: "哈哈哈测试" });
-    // note.show();
-    // dialog.showErrorBox(titel, content);
-    dialog.showMessageBox({ title, message: content, type });
-    // dialog.showOpenDialog();
-  });
-  ipcMain.on("createRedisConnect", (e, { title, content: body, type, callback }) => {
-    const redis = new RedisServer();
-    redis.connectRedis({ host: '127.0.0.1', username: '127.0.0.1', port: 6379 });
-    // const local = redis.getRedisByName('127.0.0.1');
-    if (callback) {
-      callback(redis.getRedis());
-    }
   });
 }
 
