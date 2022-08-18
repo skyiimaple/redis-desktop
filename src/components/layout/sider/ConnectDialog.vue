@@ -1,70 +1,72 @@
-<script setup lang='ts'>import { reactive, ref } from 'vue'
-import type { FormInstance } from 'element-plus'
+<script setup lang='ts'>import { reactive, ref, toRaw } from 'vue'
+import { ElMessage, FormInstance } from 'element-plus'
+import { MessageBox } from '@element-plus/icons-vue';
+import RedisServer from '../../../redis/RedisServer';
+import { RedisData } from '../../../types/global';
+import { toReactive } from '@vueuse/shared';
+import CommonUtils from '../../../utils/utils';
 
 const ruleFormRef = ref<FormInstance>()
+type props = {
+  connectVisible: boolean,
+  title: string,
+  key?: string,
+  model?: 'create' | 'edit' | 'view',
+  connectData?: any
+}
+
+const props = defineProps<props>()
 
 const check = (rule: any, value: any, callback: any) => {
   if (!value) {
     value
-    return callback(new Error('Please input the value'))
+    return callback(new Error('不可以为空'))
   }
 }
 
 
-const ruleForm = reactive({
-  host: '',
-  port: '',
+let ruleForm = reactive<any>({
+  host: '127.0.0.1',
+  port: '6379',
   password: '',
-  username: '',
-  name: '',
+  username: 'admin',
+  name: 'localhost',
+  key: ''
 })
+
 
 const rules = reactive({
-  host: [{ validator: check, trigger: 'blur' }],
-  port: [{ validator: check, trigger: 'blur' }],
-  password: [{ validator: check, trigger: 'blur' }],
-  username: [{ validator: check, trigger: 'blur' }],
-  name: [{ validator: check, trigger: 'blur' }],
+  host: [{ validator: check, trigger: 'blur', required: true }],
+  port: [{ validator: check, trigger: 'blur', required: true }],
 })
 
-const submitForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.validate((valid) => {
-    if (valid) {
-      createConnect()
-    } else {
-      console.log('error submit!')
-      return false
-    }
-  })
-}
-
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
-}
-
-type props = {
-  connectVisible: boolean,
-  title: string
-}
-
-const props = defineProps<props>()
 const emits = defineEmits(['saveConnect', 'cancelConnect', 'testConnect', 'handleClose'])
 const createConnect = () => {
-  // props.redisList.push(RedisServer.createRedis())
-  // connectVisible.value = true
-  emits('saveConnect', ruleForm)
+  if (!ruleForm.host || !ruleForm.port) {
+    return
+  }
+
+  // const connectStr = localStorage.getItem('connections')
+  // const isCurrent = 
+  // const isExist = connectStr?.includes(ruleForm.host) && connectStr?.includes(ruleForm.port)
+  if (RedisServer.isExistCheck(toRaw(ruleForm))) {
+    ElMessage.warning('当前服务已存在')
+    return
+  }
+  emits('saveConnect', toRaw(ruleForm))
 }
 const handleClose = () => {
   console.log('初始化 :>> ',)
-  resetForm(ruleFormRef.value)
   emits('handleClose')
+}
+const afterOpen = () => {
+  if (!props.connectData) return
+  CommonUtils.setReactive(ruleForm, props.connectData)
 }
 </script>
 
 <template>
-  <el-dialog v-model="connectVisible" :title="title" width="800px" :before-close="handleClose">
+  <el-dialog v-model="connectVisible" @opened="afterOpen" :title="title" width="800px" :before-close="handleClose">
     <el-form ref="ruleFormRef" :model="ruleForm" status-icon :rules="rules" label-width="auto" label-position="top"
       class="ruleForm">
       <div class="connect-form">
@@ -87,9 +89,9 @@ const handleClose = () => {
     </el-form>
     <template #footer>
       <el-space>
-        <el-button type="success" @click="emits('testConnect')">测试连接</el-button>
+        <el-button type="success">测试连接</el-button>
         <el-button @click="emits('cancelConnect')">取消</el-button>
-        <el-button type="primary" @click="submitForm">保存连接</el-button>
+        <el-button type="primary" @click="createConnect">保存连接</el-button>
       </el-space>
     </template>
   </el-dialog>

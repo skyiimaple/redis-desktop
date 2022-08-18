@@ -1,6 +1,7 @@
 <script setup lang='ts'>
+import { react } from '@babel/types'
 import { ElMessage } from 'element-plus'
-import { ref } from 'vue'
+import { reactive, ref, toRaw } from 'vue'
 import RedisServer from '../../../redis/RedisServer'
 import { RedisData } from '../../../types/global'
 import CommonUtils from '../../../utils/utils'
@@ -9,9 +10,11 @@ type props = {    // 设置类型
   redisList: RedisData[],
 }
 
-defineProps<props>()
+const props = defineProps<props>()
+const emits = defineEmits(['resetConnect'])
 
-const activeNames = ref('1');
+const activeNames = ref('1')
+let curData = ref<any>({})
 const predefineColors = ref([
   '#ff4500',
   '#ff8c00',
@@ -22,6 +25,23 @@ const predefineColors = ref([
   '#c71585',
   '#c7158577',
 ])
+const connectVisible = ref(false)
+
+const editConnect = (data: RedisData) => {
+  connectVisible.value = true
+  curData.value = data
+}
+const saveConnect = (data: RedisData) => {
+  closeDialog()
+  RedisServer.setConnectMaps(curData.value.key, { ...toRaw(curData.value), ...data })
+  emits('resetConnect')
+}
+const closeDialog = () => {
+  connectVisible.value = false
+}
+const handleClose = () => {
+  closeDialog()
+}
 const saveSignColor = (color: any, data: RedisData) => {
   RedisServer.setConnectMaps(data.key, color, 'color')
 }
@@ -56,7 +76,7 @@ const creatRandomNumber = () => {
                       <el-dropdown-item>
                         <SwitchButton class="dropdown-icon" />关闭连接
                       </el-dropdown-item>
-                      <el-dropdown-item>
+                      <el-dropdown-item @click="editConnect(data)">
                         <Edit class="dropdown-icon" />编辑连接
                       </el-dropdown-item>
                       <el-dropdown-item>
@@ -85,6 +105,10 @@ const creatRandomNumber = () => {
       </el-collapse-item>
     </el-collapse>
   </div>
+
+  <ConnectDialog :connectVisible="connectVisible" :connectData="curData" title="新建连接" @cancel-connect="closeDialog"
+    @handle-close="handleClose" @save-connect="saveConnect">
+  </ConnectDialog>
 </template>
 
 <style lang='scss' scoped>

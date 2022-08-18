@@ -9,12 +9,14 @@ import SiderContent from "./SiderContent.vue"
 const redisList = ref<RedisData[]>([])
 
 const reset = () => {
+  redisList.value = []
   RedisServer.initConnectMaps()
   for (const key in RedisServer.connectMaps) {
     if (Object.prototype.hasOwnProperty.call(RedisServer.connectMaps, key)) {
       redisList.value.push(RedisServer.connectMaps[key])
     }
   }
+
 }
 
 onBeforeMount(() => {
@@ -25,7 +27,7 @@ onBeforeMount(() => {
 <template>
   <SiderHeader :redisList="redisList"></SiderHeader>
   <el-divider style="margin: 10px 0 0;" />
-  <SiderContent :redisList="redisList"></SiderContent>
+  <SiderContent :redisList="redisList" @resetConnect="reset"></SiderContent>
 </template>
 
 <style lang='scss' scoped>

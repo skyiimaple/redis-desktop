@@ -10,6 +10,16 @@ type props = {
 
 const props = defineProps<props>()
 const connectVisible = ref(false)
+const saveConnect = (data: any) => {
+  closeDialog()
+  props.redisList.push(RedisServer.createRedis(data))
+}
+const closeDialog = () => {
+  connectVisible.value = false
+}
+const handleClose = () => {
+  closeDialog()
+}
 </script>
 
 <template>
@@ -23,8 +33,8 @@ const connectVisible = ref(false)
       <el-button type="info" icon="List" circle />
     </div>
   </div>
-  <ConnectDialog :connectVisible="connectVisible" title="新建连接" @cancel-connect="connectVisible = false"
-    @handle-close="connectVisible = false">
+  <ConnectDialog :connectVisible="connectVisible" model="create" title="新建连接" @cancel-connect="closeDialog"
+    @handle-close="handleClose" @save-connect="saveConnect">
   </ConnectDialog>
 </template>
 

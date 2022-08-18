@@ -21,4 +21,16 @@ export default class CommonUtils {
   static getKey() {
     return `${this.getCurTime()}_${this.randomString()}`;
   }
+
+  static setReactive(target: any = {}, data: any = {}, prop?: string) {
+    if (prop) {
+      target[prop] = data
+    } else {
+      for (const key in target) {
+        if (Object.prototype.hasOwnProperty.call(target, key) && Object.prototype.hasOwnProperty.call(data, key)) {
+          target[key] = data[key]
+        }
+      }
+    }
+  }
 }
