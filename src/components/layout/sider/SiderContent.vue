@@ -1,6 +1,7 @@
 <script setup lang='ts'>
 import { react } from '@babel/types'
 import { ElMessage } from 'element-plus'
+import { emit } from 'process'
 import { reactive, ref, toRaw } from 'vue'
 import RedisServer from '../../../redis/RedisServer'
 import { RedisData } from '../../../types/global'
@@ -34,7 +35,9 @@ const editConnect = (data: RedisData) => {
 const saveConnect = (data: RedisData) => {
   closeDialog()
   RedisServer.setConnectMaps(curData.value.key, { ...toRaw(curData.value), ...data })
+  RedisServer.createConnect(curData.value.key, data)
   emits('resetConnect')
+  curData.value = {}
 }
 const closeDialog = () => {
   connectVisible.value = false
@@ -48,6 +51,14 @@ const saveSignColor = (color: any, data: RedisData) => {
 const creatRandomNumber = () => {
   ElMessage.success('当前随机数是：' + CommonUtils.randomString(-5))
 }
+
+const deleteConnect = (data: any) => {
+  RedisServer.deleteConnect(data.key)
+  emits('resetConnect')
+}
+const rediHome = (key: any) => {
+  console.log('RedisServer.getRedisInfo(key) :>> ', RedisServer.getRedisInfo(key));
+}
 </script>
 
 <template>
@@ -60,7 +71,7 @@ const creatRandomNumber = () => {
             <span class="title-text">{{ data.name }}</span>
             <el-space style="font-size: 16px;">
               <div title="Redis信息" class="rv-flex">
-                <HomeFilled class="el-icon" @click.stop="creatRandomNumber" />
+                <HomeFilled class="el-icon" @click.stop="rediHome(data.key)" />
               </div>
               <div title="Redis控制台" class="rv-flex">
                 <Position class="el-icon" @click.stop="creatRandomNumber" />
@@ -79,7 +90,7 @@ const creatRandomNumber = () => {
                       <el-dropdown-item @click="editConnect(data)">
                         <Edit class="dropdown-icon" />编辑连接
                       </el-dropdown-item>
-                      <el-dropdown-item>
+                      <el-dropdown-item @click="deleteConnect(data)">
                         <Delete class="dropdown-icon" />删除连接
                       </el-dropdown-item>
                       <el-dropdown-item>
@@ -106,8 +117,8 @@ const creatRandomNumber = () => {
     </el-collapse>
   </div>
 
-  <ConnectDialog :connectVisible="connectVisible" :connectData="curData" title="新建连接" @cancel-connect="closeDialog"
-    @handle-close="handleClose" @save-connect="saveConnect">
+  <ConnectDialog v-if="connectVisible" :connectVisible="connectVisible" :connectData="curData" title="新建连接"
+    @cancel-connect="closeDialog" @handle-close="handleClose" @save-connect="saveConnect">
   </ConnectDialog>
 </template>
 

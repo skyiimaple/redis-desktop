@@ -1,4 +1,5 @@
 <script setup lang='ts'>
+import { ElMessage } from 'element-plus';
 import { ref } from 'vue'
 import RedisServer from '../../../redis/RedisServer'
 import { RedisData } from '../../../types/global'
@@ -12,7 +13,8 @@ const props = defineProps<props>()
 const connectVisible = ref(false)
 const saveConnect = (data: any) => {
   closeDialog()
-  props.redisList.push(RedisServer.createRedis(data))
+  const { data: redis } = RedisServer.createRedis(data)
+  props.redisList.push(redis)
 }
 const closeDialog = () => {
   connectVisible.value = false
