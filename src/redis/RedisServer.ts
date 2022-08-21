@@ -48,8 +48,7 @@ export default class RedisServer {
   }
 
   static createConnect(key: string, option: any) {
-    console.log('option :>> ', option);
-    const redis = new Redis(option)
+    const redis = new Redis({ ...option, ...BaseConfig })
     redis.on('error', (error: Error) => {
       ElMessage.error(`服务连接失败：${error}`)
     });
@@ -73,8 +72,6 @@ export default class RedisServer {
     if (this.redisClient.has(key)) {
       return this.redisClient.get(key);
     }
-    console.log('this.connectMaps :>> ', this.connectMaps);
-    console.log('key :>> ', key);
     return this.createConnect(key, this.connectMaps[key])
   }
 

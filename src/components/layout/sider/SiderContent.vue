@@ -14,7 +14,7 @@ type props = {    // 设置类型
 const props = defineProps<props>()
 const emits = defineEmits(['resetConnect'])
 
-const activeNames = ref('1')
+const activeNames = ref(0)
 let curData = ref<any>({})
 const predefineColors = ref([
   '#ff4500',
@@ -27,6 +27,7 @@ const predefineColors = ref([
   '#c7158577',
 ])
 const connectVisible = ref(false)
+const keyList = ref<any>([])
 
 const editConnect = (data: RedisData) => {
   connectVisible.value = true
@@ -59,12 +60,32 @@ const deleteConnect = (data: any) => {
 const rediHome = (key: any) => {
   console.log('RedisServer.getRedisInfo(key) :>> ', RedisServer.getRedisInfo(key));
 }
+
+const refreshRedis = (key: string) => {
+  const list: any[] = []
+  const client = RedisServer.getClient(key)
+  console.log('client :>> ', client);
+  const stream = client.scanStream({ match: '*', count: 10 })
+  console.log('stream :>> ', stream);
+  stream.on('data', keys => {
+    console.log('keys :>> ', keys);
+    list.push(...keys)
+    if (list.length > 4) {
+      stream.pause();
+      console.log('list :>> ', list);
+    }
+  });
+  keyList.value = list
+}
+const collChange = (data: any) => {
+  console.log('data :>> ', data);
+}
 </script>
 
 <template>
   <div>
-    <el-collapse v-model="activeNames" accordion>
-      <el-collapse-item class="collapse-item" :style="{ '--connectcolor': data.color }" :name="index"
+    <el-collapse v-model="activeNames" accordion @change="collChange">
+      <el-collapse-item class="collapse-item" :style="{ '--connectcolor': data.color }" :name="index + 1"
         v-for="(data, index) of redisList">
         <template #title>
           <div class="title-template">
@@ -77,7 +98,7 @@ const rediHome = (key: any) => {
                 <Position class="el-icon" @click.stop="creatRandomNumber" />
               </div>
               <div title="刷新" class="rv-flex">
-                <Refresh class="el-icon" @click.stop="creatRandomNumber" />
+                <Refresh class="el-icon" @click.stop="refreshRedis(data.key)" />
               </div>
               <div class="rv-flex">
                 <el-dropdown>
@@ -111,7 +132,7 @@ const rediHome = (key: any) => {
           </div>
         </template>
         <div class="tree-list">
-          <tree-list></tree-list>
+          <tree-list :data="data" :isOpen="Number(activeNames) === index + 1"></tree-list>
         </div>
       </el-collapse-item>
     </el-collapse>

@@ -3,75 +3,66 @@
 </template>
 
 <script lang="ts" setup>
+import { onBeforeMount, reactive, Ref, ref, watch, watchEffect } from 'vue';
+import RedisServer from '../redis/RedisServer';
+import { RedisData } from '../types/global';
+
+
 interface Tree {
   label: string
   children?: Tree[]
 }
+type props = {
+  data: RedisData,
+  isOpen: boolean
+}
+const props = defineProps<props>()
 
 const handleNodeClick = (data: Tree) => {
   console.log(data)
 }
 
-const data: Tree[] = [
-  {
-    label: 'Level one 1',
-    children: [
-      {
-        label: 'Level two 1-1',
-        children: [
-          {
-            label: 'Level three 1-1-1',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    label: 'Level one 2',
-    children: [
-      {
-        label: 'Level two 2-1',
-        children: [
-          {
-            label: 'Level three 2-1-1',
-          },
-        ],
-      },
-      {
-        label: 'Level two 2-2',
-        children: [
-          {
-            label: 'Level three 2-2-1',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    label: 'Level one 3',
-    children: [
-      {
-        label: 'Level two 3-1',
-        children: [
-          {
-            label: 'Level three 3-1-1',
-          },
-        ],
-      },
-      {
-        label: 'Level two 3-2',
-        children: [
-          {
-            label: 'Level three 3-2-1',
-          },
-        ],
-      },
-    ],
-  },
-]
+const data = reactive<Tree[]>([])
+
+onBeforeMount(() => {
+  console.log('object :>> ', props);
+})
+const handleKeys = (keys: string[]) => {
+  keys.forEach((key: string) => {
+    data.push(getTreeList(key))
+  });
+}
+const getTreeList = (key: string) => {
+  const separator = props.data.separator || ':'
+  const list: Tree = { label: '', children: [] }
+  const index = key.indexOf(separator)
+  if (index > -1) {
+    list.label = key.split(':')[0]
+    list.children?.push(getTreeList(key.substring(index + 1)))
+  } else {
+    list.label = key
+  }
+  return list
+}
+const queryKeys = () => {
+  const client = RedisServer.getClient(props.data.key)
+  const stream = client.scanStream({ match: '*', count: 5000 })
+  stream.on('data', keys => {
+    handleKeys(keys)
+    if (data.length > 5000) {
+      stream.pause();
+    }
+  });
+}
 
 const defaultProps = {
   children: 'children',
   label: 'label',
 }
+watch(() => props.isOpen, (value) => {
+  if (value && !data.length) {
+    queryKeys()
+  }
+
+})
 </script>
