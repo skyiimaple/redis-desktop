@@ -33,4 +33,26 @@ export default class CommonUtils {
       }
     }
   }
+
+
+  /**
+   * 处理成树形结构
+   * 
+   * @param array 要被处理的的数组
+   * @param id 节点id
+   * @param pid 父节点id
+   */
+  static formatTree(array: any[], id: string = 'id', pid: string = 'pid') {
+    // 先深拷贝 不影响原数据
+    let copyedObj = JSON.parse(JSON.stringify(array)) // 深拷贝源数据
+    let data = copyedObj.filter((parent: any) => {
+      let findChildren = copyedObj.filter((child: any) => {
+        return parent[id] === child[pid]
+      })
+      parent.children = (findChildren.length > 0 && !parent.value) ? findChildren : []
+      parent.children.sort((a: any, b: any) => { return a.label?.length - b.label?.length })
+      return parent[pid] === '' // 返回顶层，依据实际情况判断这里的返回值
+    })
+    return data
+  }
 }
