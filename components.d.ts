@@ -28,7 +28,6 @@ declare module '@vue/runtime-core' {
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTree: typeof import('element-plus/es')['ElTree']
-    ElTreeV2: typeof import('element-plus/es')['ElTreeV2']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Sider: typeof import('./src/components/layout/sider/Sider.vue')['default']
     SiderContent: typeof import('./src/components/layout/sider/SiderContent.vue')['default']

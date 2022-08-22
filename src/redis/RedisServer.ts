@@ -1,5 +1,6 @@
 import { ElMessage } from "element-plus";
 import Redis, { RedisOptions } from "ioredis";
+import { resolve } from "path";
 import CommonUtils from "../utils/utils";
 
 const LOCALCONNECT = {
@@ -109,8 +110,8 @@ export default class RedisServer {
 
   static getRedisInfo(key: string) {
     const client = RedisServer.getClient(key)
-    const infoMap = new Map();
-    client.info().then(info => {
+    return client.info().then(info => {
+      const infoMap = new Map();
       const strList = info.replaceAll('\r', '').split('\n')
       let obj: any = {}
       let key = ''
@@ -128,7 +129,7 @@ export default class RedisServer {
           obj = {}
         }
       })
+      return infoMap
     })
-    return infoMap
   }
 }

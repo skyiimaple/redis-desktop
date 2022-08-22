@@ -1,10 +1,9 @@
 <script setup lang='ts'>
-import { react } from '@babel/types'
 import { ElMessage } from 'element-plus'
-import { emit } from 'process'
 import { reactive, ref, toRaw } from 'vue'
 import RedisServer from '../../../redis/RedisServer'
 import { RedisData } from '../../../types/global'
+import mitter from '../../../utils/bus'
 import CommonUtils from '../../../utils/utils'
 
 type props = {    // 设置类型
@@ -27,7 +26,6 @@ const predefineColors = ref([
   '#c7158577',
 ])
 const connectVisible = ref(false)
-const keyList = ref<any>([])
 
 const editConnect = (data: RedisData) => {
   connectVisible.value = true
@@ -57,25 +55,17 @@ const deleteConnect = (data: any) => {
   RedisServer.deleteConnect(data.key)
   emits('resetConnect')
 }
-const rediHome = (key: any) => {
-  console.log('RedisServer.getRedisInfo(key) :>> ', RedisServer.getRedisInfo(key));
+const rediHome = (data: any) => {
+  // console.log('RedisServer.getRedisInfo(key) :>> ', RedisServer.getRedisInfo(key));
+  RedisServer.getRedisInfo(data.key).then(res => {
+    mitter.emit('createHomeTab', { data, info: res })
+  })
 }
 
 const refreshRedis = (key: string) => {
   const list: any[] = []
   const client = RedisServer.getClient(key)
   console.log('client :>> ', client);
-  const stream = client.scanStream({ match: '*', count: 10 })
-  console.log('stream :>> ', stream);
-  stream.on('data', keys => {
-    console.log('keys :>> ', keys);
-    list.push(...keys)
-    if (list.length > 4) {
-      stream.pause();
-      console.log('list :>> ', list);
-    }
-  });
-  keyList.value = list
 }
 </script>
 
@@ -89,7 +79,7 @@ const refreshRedis = (key: string) => {
             <span class="title-text">{{ data.name }}</span>
             <el-space style="font-size: 16px;">
               <div title="Redis信息" class="rv-flex">
-                <HomeFilled class="el-icon" @click.stop="rediHome(data.key)" />
+                <HomeFilled class="el-icon" @click.stop="rediHome(data)" />
               </div>
               <div title="Redis控制台" class="rv-flex">
                 <Position class="el-icon" @click.stop="creatRandomNumber" />

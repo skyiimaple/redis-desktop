@@ -36,7 +36,7 @@ import TabSpace from './components/layout/tabspace/TabSpace.vue';
 
   .el-aside {
     border-right: 1px solid #ccc;
-    padding: 10px;
+    padding: 16px 10px;
   }
 }
 </style>

@@ -1,56 +1,66 @@
 <template>
   <el-tabs v-model="editableTabsValue" type="card" class="demo-tabs" closable @tab-remove="removeTab">
-    <el-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
+    <el-tab-pane v-for="item in editableTabs" :key="item.key" :label="item.title" :name="item.key">
       {{ item.content }}
     </el-tab-pane>
   </el-tabs>
 </template>
 <script lang="ts" setup>
 import { TabPanelName } from 'element-plus';
+import { type } from 'os';
 import { inject, ref, watch, watchEffect } from 'vue'
+import { RedisData } from '../../../types/global';
+import mitter from '../../../utils/bus';
 
-let tabIndex = 2
-const editableTabsValue = ref('2')
-const editableTabs = ref([
-  {
-    title: 'Tab 1',
-    name: '1',
-    content: 'Tab 1 content',
-  },
-  {
-    title: 'Tab 2',
-    name: '2',
-    content: 'Tab 2 content',
-  },
-])
-const keys = inject('newHomeTab')
+type Tabs = {
+  title: string,
+  name: string,
+  content?: any,
+  key?: string,
+  type?: 'home' | 'string' | 'set' | 'hash' | 'list' | 'sortedSet' | 'control'
+}
+type TabParams = {
+  data: RedisData,
+  info: Map<string, object>
+}
+const editableTabsValue = ref('1')
+const editableTabs = ref<Tabs[]>([])
+mitter.on('createHomeTab', (res: any) => {
+  addHomeTab(res)
+})
 
 
-const addTab = (targetName?: TabPanelName) => {
-  const newTabName = `${++tabIndex}`
-  editableTabs.value.push({
-    title: 'New Tab',
-    name: newTabName,
-    content: 'New Tab content',
-  })
-  editableTabsValue.value = newTabName
+const addHomeTab = (tab: TabParams) => {
+  const { name, key } = tab.data
+  const tabItem = editableTabs.value.find(res => res.key === key)
+  if (!tabItem) {
+    editableTabs.value.push({
+      title: name,
+      name: name,
+      key: key,
+      content: tab.info,
+      type: 'home'
+    })
+  }
+  editableTabsValue.value = key
 }
 const removeTab = (targetName: TabPanelName) => {
   const tabs = editableTabs.value
   let activeName = editableTabsValue.value
   if (activeName === targetName) {
     tabs.forEach((tab, index) => {
-      if (tab.name === targetName) {
+      if (tab.key === targetName) {
         const nextTab = tabs[index + 1] || tabs[index - 1]
         if (nextTab) {
-          activeName = nextTab.name
+          activeName = nextTab.key || ''
         }
       }
     })
   }
 
   editableTabsValue.value = activeName
-  editableTabs.value = tabs.filter((tab) => tab.name !== targetName)
+  editableTabs.value = tabs.filter((tab) => tab.key !== targetName)
+  console.log('editableTabs.value :>> ', editableTabs.value);
 }
 </script>
 <style>

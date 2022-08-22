@@ -51,8 +51,23 @@ export default class CommonUtils {
       })
       parent.children = (findChildren.length > 0 && !parent.value) ? findChildren : []
       parent.children.sort((a: any, b: any) => { return a.label?.length - b.label?.length })
+      // console.log('findChildren :>> ', findChildren);
+      // parent.keyCount = copyedObj.find 
       return parent[pid] === '' // 返回顶层，依据实际情况判断这里的返回值
     })
+    this.getChildrenLen(data)
     return data
+  }
+
+  static getChildrenLen(data: any[]) {
+    if (data.some((res: any) => res.value)) {
+      return data.length
+    }
+    let count = 0
+    data.forEach((res: any) => {
+      res.keyCount = this.getChildrenLen(res.children)
+      count += res.keyCount
+    })
+    return count
   }
 }
