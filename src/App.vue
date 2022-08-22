@@ -6,7 +6,7 @@ import TabSpace from './components/layout/tabspace/TabSpace.vue';
 </script>
 
 <template>
-  <el-container>
+  <el-container class="common-layout">
     <el-aside width="400px">
       <Sider></Sider>
     </el-aside>
@@ -16,14 +16,27 @@ import TabSpace from './components/layout/tabspace/TabSpace.vue';
   </el-container>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 16px;
+  height: 100%;
+  width: 100%;
   /* color: #2c3e50; */
   /* text-align: center; */
   /* margin-top: 60px; */
+}
+
+.common-layout {
+
+  height: 100%;
+  width: 100%;
+
+  .el-aside {
+    border-right: 1px solid #ccc;
+    padding: 10px;
+  }
 }
 </style>

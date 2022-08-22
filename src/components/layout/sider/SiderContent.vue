@@ -77,14 +77,11 @@ const refreshRedis = (key: string) => {
   });
   keyList.value = list
 }
-const collChange = (data: any) => {
-  console.log('data :>> ', data);
-}
 </script>
 
 <template>
   <div>
-    <el-collapse v-model="activeNames" accordion @change="collChange">
+    <el-collapse v-model="activeNames" accordion>
       <el-collapse-item class="collapse-item" :style="{ '--connectcolor': data.color }" :name="index + 1"
         v-for="(data, index) of redisList">
         <template #title>
