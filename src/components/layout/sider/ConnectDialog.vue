@@ -1,9 +1,6 @@
 <script setup lang='ts'>import { reactive, ref, toRaw } from 'vue'
 import { ElMessage, FormInstance } from 'element-plus'
-import { MessageBox } from '@element-plus/icons-vue';
 import RedisServer from '../../../redis/RedisServer';
-import { RedisData } from '../../../types/global';
-import { toReactive } from '@vueuse/shared';
 import CommonUtils from '../../../utils/utils';
 
 const ruleFormRef = ref<FormInstance>()

@@ -26,7 +26,7 @@ onBeforeMount(() => {
 
 <template>
   <SiderHeader :redisList="redisList"></SiderHeader>
-  <el-divider style="margin: 10px 0 0;" />
+  <el-divider style="margin: 7px 0 0;" />
   <SiderContent :redisList="redisList" @resetConnect="reset"></SiderContent>
 </template>
 

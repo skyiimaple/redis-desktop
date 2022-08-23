@@ -1,16 +1,16 @@
 <template>
-  <el-tabs v-model="editableTabsValue" type="card" class="demo-tabs" closable @tab-remove="removeTab">
+  <el-tabs v-model="editableTabsValue" type="card" class="tab-box" closable @tab-remove="removeTab">
     <el-tab-pane v-for="item in editableTabs" :key="item.key" :label="item.title" :name="item.key">
-      {{ item.content }}
+      <home-tab :infoData="item.content"></home-tab>
     </el-tab-pane>
   </el-tabs>
 </template>
 <script lang="ts" setup>
 import { TabPanelName } from 'element-plus';
-import { type } from 'os';
-import { inject, ref, watch, watchEffect } from 'vue'
+import { ref } from 'vue'
 import { RedisData } from '../../../types/global';
 import mitter from '../../../utils/bus';
+import HomeTab from './hometab/HomeTab.vue';
 
 type Tabs = {
   title: string,
@@ -64,10 +64,10 @@ const removeTab = (targetName: TabPanelName) => {
 }
 </script>
 <style>
-.demo-tabs>.el-tabs__content {
-  padding: 32px;
+.tab-box>.el-tabs__content {
+  /* padding: 32px;
   color: #6b778c;
   font-size: 32px;
-  font-weight: 600;
+  font-weight: 600; */
 }
 </style>
