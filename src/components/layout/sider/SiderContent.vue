@@ -58,7 +58,7 @@ const deleteConnect = (data: any) => {
 const rediHome = (data: any) => {
   // console.log('RedisServer.getRedisInfo(key) :>> ', RedisServer.getRedisInfo(key));
   RedisServer.getRedisInfo(data.key).then(res => {
-    mitter.emit('createHomeTab', { data, info: res })
+    mitter.emit('createHomeTab', { data, info: res.infoObj, db: res.infoMap.get('Keyspace') })
   })
 }
 

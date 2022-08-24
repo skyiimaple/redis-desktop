@@ -21,7 +21,8 @@ type Tabs = {
 }
 type TabParams = {
   data: RedisData,
-  info: Map<string, object>
+  info: object,
+  db: object
 }
 const editableTabsValue = ref('1')
 const editableTabs = ref<Tabs[]>([])
@@ -38,7 +39,7 @@ const addHomeTab = (tab: TabParams) => {
       title: name,
       name: name,
       key: key,
-      content: tab.info,
+      content: tab,
       type: 'home'
     })
   }
@@ -63,11 +64,15 @@ const removeTab = (targetName: TabPanelName) => {
   console.log('editableTabs.value :>> ', editableTabs.value);
 }
 </script>
-<style>
-.tab-box>.el-tabs__content {
-  /* padding: 32px;
-  color: #6b778c;
-  font-size: 32px;
-  font-weight: 600; */
+<style lang="scss">
+.tab-box {
+  height: 100%;
+
+
+  &>.el-tabs__content {
+    height: calc(100% - 40px);
+    overflow: auto;
+    padding: 0 6px;
+  }
 }
 </style>

@@ -112,6 +112,7 @@ export default class RedisServer {
     const client = RedisServer.getClient(key)
     return client.info().then(info => {
       const infoMap = new Map();
+      const infoObj: any = {};
       const strList = info.replaceAll('\r', '').split('\n')
       let obj: any = {}
       let key = ''
@@ -123,13 +124,14 @@ export default class RedisServer {
           } else {
             const [key, value] = res.split(':')
             obj[key] = value
+            infoObj[key] = value
           }
         } else {
           infoMap.set(key, { ...obj, treeID: key })
           obj = {}
         }
       })
-      return infoMap
+      return { infoObj, infoMap }
     })
   }
 }
