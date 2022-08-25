@@ -8,4 +8,5 @@ const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 app.use(ElementPlus).mount('#app')

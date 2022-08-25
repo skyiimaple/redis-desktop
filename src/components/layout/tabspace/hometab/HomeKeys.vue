@@ -36,8 +36,8 @@ interface DB {
 <template>
   <el-card shadow="always">
     <template #header>
-      <div class="card-header">
-        <el-icon class="header-icon">
+      <div class="title-icon-label">
+        <el-icon>
           <Histogram />
         </el-icon>
         <span>键值统计</span>

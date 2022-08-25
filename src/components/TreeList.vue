@@ -17,6 +17,9 @@
               <FolderOpened />
             </el-icon>
           </div>
+          <el-icon v-else>
+            <Key />
+          </el-icon>
           <span>{{ node.label }}</span>
         </el-space>
         <span v-if="node.data.keyCount" class="tree-key-count">（{{ node.data.keyCount }}）</span>
@@ -29,6 +32,7 @@
 import { onBeforeMount, reactive, Ref, ref, watch, watchEffect } from 'vue';
 import RedisServer from '../redis/RedisServer';
 import { RedisData } from '../types/global';
+import mitter from '../utils/bus';
 import CommonUtils from '../utils/utils';
 
 
@@ -54,10 +58,9 @@ const defaultProps = {
 const searchMatch = ref<string>()
 const treeData = ref<Tree[]>([])
 
-const handleNodeClick = (data: Tree) => {
-  if (data.value) {
-    console.log('keys:', data)
-    console.log('clientkey:', props.data.key)
+const handleNodeClick = (key: Tree) => {
+  if (key.value) {
+    mitter.emit('creatKeysTab', { data: props.data, key: key.value })
   }
 }
 

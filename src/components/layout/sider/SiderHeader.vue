@@ -1,5 +1,4 @@
 <script setup lang='ts'>
-import { ElMessage } from 'element-plus';
 import { ref } from 'vue'
 import RedisServer from '../../../redis/RedisServer'
 import { RedisData } from '../../../types/global'

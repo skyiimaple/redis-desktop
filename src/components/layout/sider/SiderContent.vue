@@ -63,9 +63,11 @@ const rediHome = (data: any) => {
 }
 
 const refreshRedis = (key: string) => {
-  const list: any[] = []
   const client = RedisServer.getClient(key)
-  console.log('client :>> ', client);
+}
+
+const creatController = (data: any) => {
+  mitter.emit('creatControllerTab', { data })
 }
 </script>
 
@@ -82,7 +84,7 @@ const refreshRedis = (key: string) => {
                 <HomeFilled class="el-icon" @click.stop="rediHome(data)" />
               </div>
               <div title="Redis控制台" class="rv-flex">
-                <Position class="el-icon" @click.stop="creatRandomNumber" />
+                <Position class="el-icon" @click.stop="creatController(data)" />
               </div>
               <div title="刷新" class="rv-flex">
                 <Refresh class="el-icon" @click.stop="refreshRedis(data.key)" />

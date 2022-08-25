@@ -16,6 +16,7 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
+  min-width: 1100px;
 }
 
 ul,
@@ -40,4 +41,19 @@ li {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+
+.title-icon-label {
+  user-select: none;
+
+  .el-icon {
+    vertical-align: middle;
+    font-size: 16px;
+  }
+
+  span {
+    vertical-align: middle;
+    margin-left: 4px;
+  }
 }

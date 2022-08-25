@@ -10,11 +10,11 @@ const props = defineProps<props>()
     <el-col :span="8">
       <el-card shadow="always">
         <template #header>
-          <div class="card-header">
-            <el-icon class="header-icon">
+          <div class="title-icon-label">
+            <el-icon>
               <Coin />
             </el-icon>
-            <span>服务器(Server)</span>
+            <span>服务器</span>
           </div>
         </template>
         <el-tag class='status-container' type="info" size="large">
@@ -34,8 +34,8 @@ const props = defineProps<props>()
     <el-col :span="8">
       <el-card shadow="always">
         <template #header>
-          <div class="card-header">
-            <el-icon class="header-icon">
+          <div class="title-icon-label">
+            <el-icon>
               <Cpu />
             </el-icon>
             <span>内存</span>
@@ -58,8 +58,8 @@ const props = defineProps<props>()
     <el-col :span="8">
       <el-card shadow="always">
         <template #header>
-          <div class="card-header">
-            <el-icon class="header-icon">
+          <div class="title-icon-label">
+            <el-icon>
               <Odometer />
             </el-icon>
             <span>状态</span>
@@ -83,17 +83,6 @@ const props = defineProps<props>()
 </template>
 
 <style lang='scss'>
-.card-header {
-  display: flex;
-  // align-items: center;
-
-  .header-icon {
-    width: 1.5em;
-    font-size: 20px;
-  }
-}
-
-
 .status-container {
   margin: 8px 0;
   width: 100%;

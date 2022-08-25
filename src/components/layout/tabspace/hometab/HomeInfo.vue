@@ -35,8 +35,8 @@ interface Info {
   <el-card shadow="always">
     <template #header>
       <div class="card-header rv-flex-between">
-        <div>
-          <el-icon class="header-icon">
+        <div class="title-icon-label">
+          <el-icon>
             <List />
           </el-icon>
           <span>Redis全部信息</span>

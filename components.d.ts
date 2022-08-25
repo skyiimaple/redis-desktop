@@ -45,6 +45,7 @@ declare module '@vue/runtime-core' {
     HomeServer: typeof import('./src/components/layout/tabspace/hometab/HomeServer.vue')['default']
     HomeStatus: typeof import('./src/components/layout/tabspace/hometab/HomeStatus.vue')['default']
     HomeTab: typeof import('./src/components/layout/tabspace/hometab/HomeTab.vue')['default']
+    KeyDetails: typeof import('./src/components/layout/tabspace/keytab/KeyDetails.vue')['default']
     ListTab: typeof import('./src/components/layout/tabspace/keytab/ListTab.vue')['default']
     SetTab: typeof import('./src/components/layout/tabspace/keytab/SetTab.vue')['default']
     Sider: typeof import('./src/components/layout/sider/Sider.vue')['default']
