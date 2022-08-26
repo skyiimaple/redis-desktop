@@ -3,7 +3,7 @@
 // Read more: https://github.com/vuejs/core/pull/3399
 import '@vue/runtime-core'
 
-export {}
+export { }
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
@@ -41,6 +41,7 @@ declare module '@vue/runtime-core' {
     HomeKeys: typeof import('./src/components/layout/tabspace/hometab/HomeKeys.vue')['default']
     HomeStatus: typeof import('./src/components/layout/tabspace/hometab/HomeStatus.vue')['default']
     HomeTab: typeof import('./src/components/layout/tabspace/hometab/HomeTab.vue')['default']
+    KeyDetails: typeof import('./src/components/layout/tabspace/keytab/KeyDetails.vue')['default']
     ListTab: typeof import('./src/components/layout/tabspace/keytab/ListTab.vue')['default']
     SetTab: typeof import('./src/components/layout/tabspace/keytab/SetTab.vue')['default']
     Sider: typeof import('./src/components/layout/sider/Sider.vue')['default']

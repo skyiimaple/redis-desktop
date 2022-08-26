@@ -123,6 +123,9 @@ watch(() => props.isOpen, (value) => {
     queryKeys()
   }
 })
+mitter.on('refreshClient', () => {
+  queryKeys()
+})
 </script>
 
 

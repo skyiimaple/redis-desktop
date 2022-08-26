@@ -32,6 +32,12 @@ import HashTab from "./keytab/HashTab.vue";
 import ListTab from "./keytab/ListTab.vue";
 import SortedSetTab from "./keytab/SortedSetTab.vue";
 
+import os from "os";
+
+var networkInterfaces = os.networkInterfaces();
+console.log('object :>> ', networkInterfaces);
+
+
 type TabType = 'home' | 'control' | 'string' | 'set' | 'hash' | 'list' | 'zset'
 
 type Tabs = {
