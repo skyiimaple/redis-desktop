@@ -8,7 +8,6 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ConnectDialog: typeof import('./src/components/layout/sider/ConnectDialog.vue')['default']
-    Controller: typeof import('./src/components/layout/tabspace/Controller.vue')['default']
     ControllerTab: typeof import('./src/components/layout/tabspace/ControllerTab.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -38,14 +37,10 @@ declare module '@vue/runtime-core' {
     ElTree: typeof import('element-plus/es')['ElTree']
     HashTab: typeof import('./src/components/layout/tabspace/keytab/HashTab.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
-    HomeHeader: typeof import('./src/components/layout/tabspace/hometab/HomeHeader.vue')['default']
     HomeInfo: typeof import('./src/components/layout/tabspace/hometab/HomeInfo.vue')['default']
-    HomeInfoSpace: typeof import('./src/components/layout/tabspace/HomeInfoSpace.vue')['default']
     HomeKeys: typeof import('./src/components/layout/tabspace/hometab/HomeKeys.vue')['default']
-    HomeServer: typeof import('./src/components/layout/tabspace/hometab/HomeServer.vue')['default']
     HomeStatus: typeof import('./src/components/layout/tabspace/hometab/HomeStatus.vue')['default']
     HomeTab: typeof import('./src/components/layout/tabspace/hometab/HomeTab.vue')['default']
-    KeyDetails: typeof import('./src/components/layout/tabspace/keytab/KeyDetails.vue')['default']
     ListTab: typeof import('./src/components/layout/tabspace/keytab/ListTab.vue')['default']
     SetTab: typeof import('./src/components/layout/tabspace/keytab/SetTab.vue')['default']
     Sider: typeof import('./src/components/layout/sider/Sider.vue')['default']
