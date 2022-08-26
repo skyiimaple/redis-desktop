@@ -86,9 +86,9 @@ export default class RedisServer {
     return null;
   }
 
-  private static closeClient(redis: Redis, callback?: Function) {
+  private static closeClient(client: Redis, callback?: Function) {
+    client.quit()
     callback && callback()
-    // redis.close
   }
 
   static deleteConnect(key: string) {

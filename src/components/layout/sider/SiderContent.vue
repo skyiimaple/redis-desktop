@@ -64,6 +64,7 @@ const rediHome = (data: any) => {
 
 const refreshRedis = (key: string) => {
   const client = RedisServer.getClient(key)
+  mitter.emit('refreshClient')
 }
 
 const creatController = (data: any) => {

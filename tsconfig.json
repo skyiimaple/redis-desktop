@@ -1,6 +1,12 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "src/types"
+    ],
+    "types": [
+      "element-plus/global"
+    ],
     "target": "esnext",
     "useDefineForClassFields": true,
     "module": "esnext",
@@ -16,17 +22,21 @@
       "dom"
     ],
     "skipLibCheck": true,
-    "types": [
-      "element-plus/global"
-    ]
+    "baseUrl": "./",
+    "paths": {
+      "@": [
+        "src"
+      ],
+      "@/*": [
+        "src/*"
+      ]
+    }
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
-    "src/**/*.vue",
-    "electron-main/**/*.ts",
-    "electron-preload/**/*.ts"
+    "src/**/*.vue"
   ],
   "references": [
     {

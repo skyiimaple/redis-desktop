@@ -27,3 +27,10 @@ export interface RedisData {
   auth?: string;
   color?: string;
 }
+
+export interface KeyData {
+  data: RedisData;
+  key?: string;
+  component?: any;
+  info?: any
+}
