@@ -20,14 +20,14 @@ client.zrevrange(key, 0, 100, 'WITHSCORES').then(res => {
 })
 const search = ref('')
 const filterTableData = computed(() => {
-  return tableData.value
-}
-  // tableData.filter(
-  //   (data) =>
-  //     !search.value ||
-  //     data.member.toLowerCase().includes(search.value.toLowerCase())
-  // )
-)
+  // return tableData.value
+  return tableData.value.filter(
+    (data) =>
+      !search.value ||
+      data.score.toString().toLowerCase().includes(search.value.toLowerCase()) ||
+      data.member.toLowerCase().includes(search.value.toLowerCase())
+  )
+})
 const handleEdit = (index: number, row: Zset) => {
   console.log(index, row)
 }
@@ -55,11 +55,11 @@ const getZsetData = (list: any) => {
     <el-button type="primary">添加新行</el-button>
   </div>
   <div>
-    <el-table :data="filterTableData" style="width: 100%">
-      <el-table-column type="index" :label="'ID (Total: ' + filterTableData.length + ')'" sortable width="150">
+    <el-table :data="filterTableData">
+      <el-table-column type="index" :label="'ID (Total: ' + filterTableData.length + ')'" width="150">
       </el-table-column>
-      <el-table-column label="Date" prop="score" />
-      <el-table-column label="Name" prop="member" />
+      <el-table-column label="Score" prop="score" sortable />
+      <el-table-column label="Member" prop="member" sortable />
       <el-table-column align="right">
         <template #header>
           <el-input v-model="search" size="small" placeholder="Type to search" />

@@ -34,20 +34,18 @@ interface DB {
 </script>
 
 <template>
-  <el-card shadow="always">
-    <template #header>
+  <el-card shadow="always"><template #header>
       <div class="title-icon-label">
         <el-icon>
-          <Histogram />
-        </el-icon>
-        <span>键值统计</span>
+          <Histogram></Histogram>
+        </el-icon><span>键值统计</span>
       </div>
     </template>
-    <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="db" label="db" sortable />
-      <el-table-column prop="keys" label="keys" sortable />
-      <el-table-column prop="expires" label="expires" sortable />
-      <el-table-column prop="avg_ttl" label="avg_ttl" sortable />
+    <el-table :data="tableData">
+      <el-table-column prop="db" label="db" sortable></el-table-column>
+      <el-table-column prop="keys" label="keys" sortable></el-table-column>
+      <el-table-column prop="expires" label="expires" sortable></el-table-column>
+      <el-table-column prop="avg_ttl" label="avg_ttl" sortable></el-table-column>
     </el-table>
   </el-card>
 </template>
