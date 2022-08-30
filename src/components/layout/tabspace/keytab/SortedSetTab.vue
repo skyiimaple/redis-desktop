@@ -35,17 +35,17 @@ const handleDelete = (index: number, row: Zset) => {
   console.log(index, row)
 }
 const getZsetData = (list: any) => {
-  const zsetData: Zset[] = [];
+  const data: Zset[] = [];
   if (list?.length) {
     for (var i = 0; i < list.length; i += 2) {
-      zsetData.push({
+      data.push({
         score: Number(list[i + 1]),
         member: list[i],
         uniq: CommonUtils.randomString(),
       });
     }
   }
-  return zsetData;
+  return data;
 }
 </script>
 
@@ -55,18 +55,18 @@ const getZsetData = (list: any) => {
     <el-button type="primary">添加新行</el-button>
   </div>
   <div>
-    <el-table :data="filterTableData">
+    <el-table :data="filterTableData" border>
       <el-table-column type="index" :label="'ID (Total: ' + filterTableData.length + ')'" width="150">
       </el-table-column>
       <el-table-column label="Score" prop="score" sortable />
       <el-table-column label="Member" prop="member" sortable />
-      <el-table-column align="right">
+      <el-table-column align="right" width="200">
         <template #header>
           <el-input v-model="search" size="small" placeholder="Type to search" />
         </template>
         <template #default="scope">
-          <el-button size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="small" text type="primary" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+          <el-button size="small" text type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -74,7 +74,4 @@ const getZsetData = (list: any) => {
 </template>
 
 <style lang='scss' scoped>
-.divider-btn {
-  padding: 16px 0;
-}
 </style>

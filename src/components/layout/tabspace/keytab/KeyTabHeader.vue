@@ -19,9 +19,9 @@ const refreshing = () => {
 <template>
   <el-row :gutter="10">
     <el-col :span="10">
-      <el-input v-model="myKey">
+      <el-input v-model="myKey" disabled>
         <template #prepend>
-          <span class="key-type">{{ type }}</span>
+          <span class="key-type">{{  type  }}</span>
         </template>
         <template #append>
           <el-icon><Select /></el-icon>
@@ -29,7 +29,7 @@ const refreshing = () => {
       </el-input>
     </el-col>
     <el-col :span="7">
-      <el-input v-model="ttl">
+      <el-input v-model="ttl" disabled>
         <template #prepend>
           <span>TTL</span>
         </template>

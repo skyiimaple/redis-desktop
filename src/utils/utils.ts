@@ -70,4 +70,16 @@ export default class CommonUtils {
     })
     return count
   }
+
+  static getStringSize(key: string) {
+    const size = Buffer.byteLength(key, 'utf-8')
+    if (!size) {
+      return 0
+    }
+    const i = Math.floor(Math.log(size) / Math.log(1024))
+    const count: any = (size / Math.pow(1024, i)).toFixed(2)
+    return 1 * count + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+  }
+
+
 }
