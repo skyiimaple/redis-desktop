@@ -50,7 +50,7 @@ export default class CommonUtils {
         return parent[id] === child[pid]
       })
       parent.children = (findChildren.length > 0 && !parent.value) ? findChildren : []
-      parent.children.sort((a: any, b: any) => { return a.label?.length - b.label?.length })
+      // parent.children.sort((a: any, b: any) => { return a.label?.length - b.label?.length })
       // console.log('findChildren :>> ', findChildren);
       // parent.keyCount = copyedObj.find 
       return parent[pid] === '' // 返回顶层，依据实际情况判断这里的返回值
@@ -78,7 +78,7 @@ export default class CommonUtils {
     }
     const i = Math.floor(Math.log(size) / Math.log(1024))
     const count: any = (size / Math.pow(1024, i)).toFixed(2)
-    return 1 * count + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+    return 1 * count + ['B', 'KB', 'MB', 'GB', 'TB'][i];
   }
 
 

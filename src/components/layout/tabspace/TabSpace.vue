@@ -8,7 +8,7 @@
             <Promotion v-else-if="item.type === 'control'" />
             <Key v-else />
           </el-icon>
-          <span>{{ item.title }}</span>
+          <span>{{  item.title  }}</span>
         </span>
       </template>
       <home-tab :infoData="item.content" v-if="item.type === 'home'"></home-tab>
@@ -19,7 +19,7 @@
   </el-tabs>
 </template>
 <script lang="ts" setup>
-import { TabPanelName } from 'element-plus';
+import { ElMessage, TabPanelName } from 'element-plus';
 import { markRaw, ref } from 'vue'
 import { RedisData } from '../../../types/global';
 import mitter from '../../../utils/bus';
@@ -33,6 +33,7 @@ import ListTab from "./keytab/ListTab.vue";
 import SortedSetTab from "./keytab/SortedSetTab.vue";
 
 import os from "os";
+import CommonUtils from '@/utils/utils';
 
 var networkInterfaces = os.networkInterfaces();
 console.log('object :>> ', networkInterfaces);
@@ -79,23 +80,25 @@ mitter.on('creatKeysTab', (res: any) => {
   client.type(key).then(type => {
     if (componentMap.has(type)) {
       addTabByType(name, id, 'string', { ...res, component: componentMap.get(type) })
+    } else {
+      ElMessage.error(`${key} 键不存在`)
     }
   })
   // const componentName =
 })
 
 
-const addTabByType = (name: string, key: string, type: TabType, tab: TabParams) => {
-  const tabItem = editableTabs.value.find(res => res.key === key)
+const addTabByType = (name: string, tabKey: string, type: TabType, tab: TabParams) => {
+  const tabItem = editableTabs.value.find(res => res.key === tabKey)
   if (!tabItem) {
     editableTabs.value.push({
       title: name,
-      name: key,
-      key, type,
+      name: tabKey,
+      key: tabKey, type,
       content: tab
     })
   }
-  editableTabsValue.value = key
+  editableTabsValue.value = tabKey
 }
 const removeTab = (targetName: TabPanelName) => {
   const tabs = editableTabs.value
@@ -114,6 +117,24 @@ const removeTab = (targetName: TabPanelName) => {
   editableTabsValue.value = activeName
   editableTabs.value = tabs.filter((tab) => tab.name !== targetName)
 }
+const updateTab = (tabKey: string, name: string, newTabKey: string, key: string) => {
+  const tabItem = editableTabs.value.find(res => res.key === tabKey)
+  CommonUtils.setReactive(tabItem, {
+    title: name,
+    name: newTabKey,
+    key: newTabKey,
+    content: { ...tabItem?.content, key: key }
+  })
+  editableTabsValue.value = newTabKey
+}
+mitter.on('renameKey', (res: any) => {
+  const { old, new: key, hostData } = res
+  const { name: clientName, key: clientKey } = hostData
+  const name = key + ' | ' + clientName
+  const tabKey = clientKey + '_' + old
+  const newTabKey = clientKey + '_' + key
+  updateTab(tabKey, name, newTabKey, key)
+})
 </script>
 <style lang="scss">
 .tab-box {

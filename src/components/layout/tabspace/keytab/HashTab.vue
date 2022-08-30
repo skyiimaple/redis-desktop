@@ -72,7 +72,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <KeyTabHeader :myKey="key" ttl="-1" type="hash"></KeyTabHeader>
+  <KeyTabHeader :myKey="key" type="hash" :client="client" :hostData="hostData"></KeyTabHeader>
   <div class="divider-btn">
     <el-button type="primary">添加新行</el-button>
   </div>

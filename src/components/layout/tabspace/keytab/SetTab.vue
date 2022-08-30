@@ -66,7 +66,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <KeyTabHeader :myKey="key" ttl="-1" type="set"></KeyTabHeader>
+  <KeyTabHeader :myKey="key" type="set" :client="client" :hostData="hostData"></KeyTabHeader>
   <div class="divider-btn">
     <el-button type="primary">添加新行</el-button>
   </div>

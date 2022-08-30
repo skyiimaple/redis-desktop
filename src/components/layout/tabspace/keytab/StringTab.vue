@@ -1,10 +1,12 @@
 <script setup lang='ts'>
 import RedisServer from '@/redis/RedisServer';
 import { KeyData } from '@/types/global';
-import { ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import KeyTabHeader from './KeyTabHeader.vue';
 import { DocumentCopy } from '@element-plus/icons-vue';
 import CommonUtils from '@/utils/utils';
+import { ElMessage } from 'element-plus';
+import mitter from '@/utils/bus';
 
 const props = defineProps<{ data: KeyData }>()
 const stringValue = ref('')
@@ -16,19 +18,40 @@ const options = [
 ]
 
 const hostData = props.data.data
-const key = props.data.key
+const key = props.data.key || ''
 const client = RedisServer.getClient(hostData.key)
-key && client.get(key).then(res => {
-  stringValue.value = res || ''
+const getString = () => {
+  client.get(key).then(res => {
+    if (res) {
+      stringValue.value = res
+    } else {
+      ElMessage.error(`${key} 键不存在`)
+    }
+  }).catch(e => {
+    ElMessage.error(e.message);
+  })
+}
+const saveString = () => {
+  client.set(key, stringValue.value).then(res => {
+    if (res === 'OK') {
+      ElMessage.success('修改成功')
+    }
+  }).catch(e => {
+    ElMessage.error(e.message);
+  })
+}
+onBeforeMount(() => {
+  getString()
 })
+
 </script>
 
 <template>
-  <KeyTabHeader :myKey="key" ttl="-1" type="string"></KeyTabHeader>
+  <KeyTabHeader :myKey="key" type="string" :client="client" :hostData="hostData" @refreshing="getString"></KeyTabHeader>
   <div class="rv-padding-row">
     <div class="rv-padding-row">
       <el-space>
-        <el-select v-model="selected" class="m-2" placeholder="Select" size="small">
+        <el-select v-model="selected" class="m-2" placeholder="Select" size="small" disabled>
           <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
         <el-tag size="small">
@@ -39,7 +62,7 @@ key && client.get(key).then(res => {
     </div>
     <el-input v-model="stringValue" type="textarea" :autosize="{ minRows: 16, maxRows: 20 }" />
   </div>
-  <el-button type="primary">保存</el-button>
+  <el-button type="primary" @click="saveString()">保存</el-button>
 </template>
 
 <style lang='scss' scoped>

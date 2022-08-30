@@ -50,7 +50,7 @@ const getZsetData = (list: any) => {
 </script>
 
 <template>
-  <KeyTabHeader :myKey="key" ttl="-1" type="string"></KeyTabHeader>
+  <KeyTabHeader :myKey="key" type="zset" :client="client" :hostData="hostData"></KeyTabHeader>
   <div class="divider-btn">
     <el-button type="primary">添加新行</el-button>
   </div>
