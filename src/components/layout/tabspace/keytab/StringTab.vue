@@ -24,8 +24,6 @@ const getString = () => {
   client.get(key).then(res => {
     if (res) {
       stringValue.value = res
-    } else {
-      ElMessage.error(`${key} 键不存在`)
     }
   }).catch(e => {
     ElMessage.error(e.message);
@@ -55,7 +53,7 @@ onBeforeMount(() => {
           <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
         <el-tag size="small">
-          <span>Size:{{  CommonUtils.getStringSize(stringValue)  }}</span>
+          <span>Size:{{ CommonUtils.getStringSize(stringValue) }}</span>
         </el-tag>
         <el-button type="primary" text size="small" :icon="DocumentCopy">复制</el-button>
       </el-space>

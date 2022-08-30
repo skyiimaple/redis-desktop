@@ -8,7 +8,7 @@
             <Promotion v-else-if="item.type === 'control'" />
             <Key v-else />
           </el-icon>
-          <span>{{  item.title  }}</span>
+          <span>{{ item.title }}</span>
         </span>
       </template>
       <home-tab :infoData="item.content" v-if="item.type === 'home'"></home-tab>
@@ -53,6 +53,9 @@ type TabParams = {
   info: object,
   db?: object
 }
+
+type CloseParams = { tabKey: string, type: 'one' | 'all' }
+
 const editableTabsValue = ref('1')
 const editableTabs = ref<Tabs[]>([])
 const componentMap = new Map<string, any>([
@@ -81,10 +84,15 @@ mitter.on('creatKeysTab', (res: any) => {
     if (componentMap.has(type)) {
       addTabByType(name, id, 'string', { ...res, component: componentMap.get(type) })
     } else {
-      ElMessage.error(`${key} 键不存在`)
+      ElMessage.error(`【${key}】 键不存在`)
     }
   })
   // const componentName =
+})
+mitter.on('closeTab', (params: any) => {
+  console.log('params :>> ', params);
+  const { type, tabKey } = params as CloseParams
+  removeTab(tabKey)
 })
 
 

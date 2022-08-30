@@ -1,3 +1,5 @@
+import { ElMessageBox, messageType } from "element-plus";
+
 export default class CommonUtils {
 
 
@@ -79,6 +81,16 @@ export default class CommonUtils {
     const i = Math.floor(Math.log(size) / Math.log(1024))
     const count: any = (size / Math.pow(1024, i)).toFixed(2)
     return 1 * count + ['B', 'KB', 'MB', 'GB', 'TB'][i];
+  }
+
+  static message(text: string, type: messageType = 'warning') {
+    return ElMessageBox.confirm(text, '提示',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type,
+      }
+    )
   }
 
 

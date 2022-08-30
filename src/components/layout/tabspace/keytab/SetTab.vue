@@ -24,13 +24,11 @@ const handleDelete = (index: number, row: Set) => {
   console.log(index, row)
 }
 const initData = () => {
-
   const setList: Set[] = []
   const scanOption = { match: '*', count: PageSize };
   const scanStream = client.sscanStream(key, scanOption)
   scanStream.on('data', reply => {
     console.log('reply :>> ', reply);
-
     setList.push(...getsetData(reply))
     if (tableData.value.length >= PageSize) {
       scanStream.pause();
@@ -66,7 +64,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <KeyTabHeader :myKey="key" type="set" :client="client" :hostData="hostData"></KeyTabHeader>
+  <KeyTabHeader :myKey="key" type="set" :client="client" :hostData="hostData" @refreshing="initData"></KeyTabHeader>
   <div class="divider-btn">
     <el-button type="primary">添加新行</el-button>
   </div>

@@ -1,6 +1,7 @@
 <script setup lang='ts'>
 import { RedisData } from '@/types/global';
 import mitter from '@/utils/bus';
+import CommonUtils from '@/utils/utils';
 import { Delete, DocumentCopy, Refresh } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import Redis from 'ioredis';
@@ -14,26 +15,33 @@ const keyTTL = ref<number>(-1)
 const client = props.client
 const emit = defineEmits(['copying', 'refreshing', 'deleting', 'renameKey'])
 const deleting = () => {
-  emit('deleting')
+  CommonUtils.message(`即将删除键【${props.myKey}】，是否确认？`).then(() => {
+    client.del(props.myKey).then(res => {
+      ElMessage.success('删除成功')
+      mitter.emit('refreshClient')
+      const tabKey = props.hostData.key + '_' + props.myKey
+      mitter.emit('closeTab', { tabKey, type: 'one' })
+    })
+  })
 }
 const copying = () => {
   emit('copying')
 }
 const refreshing = () => {
-  getTTL()
-  emit('refreshing')
+  client.exists(props.myKey).then(res => {
+    if (res) {
+      getTTL()
+      emit('refreshing')
+    } else {
+      ElMessage.error(`【${props.myKey}】 键不存在`)
+    }
+  })
 }
 const renameKey = (e: any) => {
   if (curKey.value === props.myKey) {
     return
   }
-  ElMessageBox.confirm(`是否修改名字${props.myKey} -> ${curKey.value}`, '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }
-  ).then(() => {
+  CommonUtils.message(`是否修改名字${props.myKey} -> ${curKey.value}`).then(() => {
     client.rename(props.myKey, curKey.value).then(res => {
       if (res === 'OK') {
         ElMessage.success('修改成功')
@@ -54,13 +62,7 @@ const getTTL = () => {
 
 const saveTTL = () => {
   if (keyTTL.value < 0) {
-    ElMessageBox.confirm(`设置TTL<=0将删除该key，是否确认？`, '提示',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      }
-    ).then(() => {
+    CommonUtils.message(`设置TTL<=0将删除该key，是否确认？`).then(() => {
       setTTL(true)
     })
   } else {
@@ -68,18 +70,28 @@ const saveTTL = () => {
   }
 }
 const setTTL = (delKey: boolean = false) => {
-  console.log('123 :>> ', 123);
   client.expire(props.myKey, keyTTL.value).then((res) => {
     if (res) {
       ElMessage.success('修改成功')
+    } else {
+      ElMessage.error(`【${props.myKey}】 键不存在`)
     }
     if (delKey) {
       mitter.emit('refreshClient')
     }
   }).catch(e => {
-    console.log('e :>> ', e);
     ElMessage.error('TTL Error: ' + e.message);
   });
+}
+
+const presetTTL = () => {
+  client.persist(props.myKey).then(res => {
+    if (res) {
+      ElMessage.success('修改成功')
+      refreshing()
+      mitter.emit('refreshClient')
+    }
+  })
 }
 
 onBeforeMount(() => {
@@ -92,11 +104,12 @@ onBeforeMount(() => {
     <el-col :span="10">
       <el-input v-model="curKey" @keyup.enter.native="renameKey">
         <template #prepend>
-          <span class="key-type">{{  type  }}</span>
+          <span class="key-type">{{ type }}</span>
         </template>
         <template #append>
           <el-icon @click="renameKey"><Select /></el-icon>
         </template>
+        <el-icon slot="suffix"><Select /></el-icon>
       </el-input>
     </el-col>
     <el-col :span="7">
@@ -106,6 +119,11 @@ onBeforeMount(() => {
         </template>
         <template #append>
           <el-icon @click="saveTTL"><Select /></el-icon>
+        </template>
+        <template #suffix>
+          <el-icon title="清除过期时间" @click="presetTTL">
+            <CloseBold />
+          </el-icon>
         </template>
       </el-input>
     </el-col>

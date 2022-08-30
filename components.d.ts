@@ -36,7 +36,6 @@ declare module '@vue/runtime-core' {
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTag: typeof import('element-plus/es')['ElTag']
-    ElTree: typeof import('element-plus/es')['ElTree']
     HashTab: typeof import('./src/components/layout/tabspace/keytab/HashTab.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     HomeInfo: typeof import('./src/components/layout/tabspace/hometab/HomeInfo.vue')['default']
