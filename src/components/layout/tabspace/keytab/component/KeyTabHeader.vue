@@ -23,7 +23,7 @@ const deleting = () => {
       const tabKey = props.hostData.key + '_' + props.myKey
       mitter.emit('closeTab', { tabKey, type: 'one' })
     })
-  })
+  }).catch(e => { })
 }
 const copying = () => {
   emit('copying')
@@ -47,7 +47,7 @@ const renameKey = (e: any) => {
     }).catch(e => {
       ElMessage.error(e.message);
     })
-  })
+  }).catch(e => { })
 }
 const getTTL = () => {
   client.ttl(props.myKey).then((reply) => {
@@ -61,7 +61,7 @@ const saveTTL = () => {
   if (keyTTL.value < 0) {
     CommonUtils.message(`设置TTL<=0将删除该key，是否确认？`).then(() => {
       setTTL(true)
-    })
+    }).catch(e => { })
   } else {
     setTTL()
   }

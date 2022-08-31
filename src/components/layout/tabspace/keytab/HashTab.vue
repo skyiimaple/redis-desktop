@@ -20,6 +20,7 @@ const dialogVisible = ref<boolean>(false)
 const dialogTitle = ref<string>('添加（Hash）')
 const params = reactive({ fieldName: '', value: '' })
 const loading = ref<boolean>(false)
+let editRowItem: Hash | null;
 
 // 表格数据
 const filterTableData = computed(() => {
@@ -31,12 +32,6 @@ const filterTableData = computed(() => {
       data.value.toLowerCase().includes(search.value.toLowerCase())
   )
 })
-const handleEdit = (index: number, row: Hash) => {
-  console.log(index, row)
-}
-const handleDelete = (index: number, row: Hash) => {
-  console.log(index, row)
-}
 
 // 初始化当前键值的的数据
 const initData = () => {
@@ -81,6 +76,7 @@ const createRow = () => {
 }
 
 const closeDialog = () => {
+  editRowItem = null
   dialogVisible.value = false
   loading.value = false
   params.fieldName = ''
@@ -89,17 +85,41 @@ const closeDialog = () => {
 
 //弹窗中的保存
 const saveRowData = () => {
-  if (params.fieldName && params.value) {
-    loading.value = true
-    client.hset(key, params.fieldName, params.value).then(res => {
-      if (res) {
+  if (!(params.fieldName && params.value)) {
+    ElMessage.error(params.fieldName ? '请填写Value' : '请填写Field')
+    return
+  }
+  loading.value = true
+  client.hset(key, params.fieldName, params.value).then(res => {
+    if (editRowItem && editRowItem.key !== params.fieldName) {
+      client.hdel(key, editRowItem.key)
+    }
+    initData()
+    closeDialog()
+    ElMessage.success(res ? '添加成功' : '修改成功')
+  })
+}
+
+// 编辑行数据
+const editRowData = (row: Hash) => {
+  dialogTitle.value = '修改（Hash）'
+  editRowItem = row
+  params.fieldName = row.key
+  params.value = row.value
+  dialogVisible.value = true
+}
+
+
+// 删除值
+const handleDelete = (row: Hash) => {
+  CommonUtils.message('是否删除当前行数据?', 'error').then(() => {
+    client.hdel(key, row.key).then(res => {
+      if (res === 1) {
+        ElMessage.success('删除成功')
         initData()
-        closeDialog()
       }
     })
-  } else {
-    ElMessage.error(params.fieldName ? '请填写Value' : '请填写Field')
-  }
+  }).catch(e => { })
 }
 
 onBeforeMount(() => {
@@ -118,25 +138,30 @@ onBeforeMount(() => {
       </el-table-column>
       <el-table-column label="Key" prop="key" sortable />
       <el-table-column label="Value" prop="value" sortable />
-      <el-table-column align="right" width="200">
+      <el-table-column align="center" width="200">
         <template #header>
-          <el-input v-model="search" size="small" placeholder="Type to search" />
+          <el-input v-model="search" size="small" />
         </template>
         <template #default="scope">
-          <el-button size="small" text type="primary" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-          <el-button size="small" text type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="small" text type="primary" @click="editRowData(scope.row)">修改</el-button>
+          <el-button size="small" text type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
   </div>
   <el-dialog v-model="dialogVisible" :title="dialogTitle" destroy-on-close center>
     <el-form label-width="auto" label-position="top" class="ruleForm">
-      <el-form-item label="Field" prop="host">
+      <el-form-item label="Field">
         <el-input v-model="params.fieldName" />
       </el-form-item>
-      <el-form-item prop="port">
+      <el-form-item>
         <template #label>
-          <span>Value</span>
+          <el-space>
+            <span>Value</span>
+            <el-tag size="small">
+              <span>Size:{{ CommonUtils.getStringSize(params.value) }}</span>
+            </el-tag>
+          </el-space>
         </template>
         <el-input v-model="params.value" type="textarea" :autosize="{ minRows: 11, maxRows: 11 }" />
       </el-form-item>
