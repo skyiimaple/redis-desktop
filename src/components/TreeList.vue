@@ -21,9 +21,9 @@
           <el-icon v-else>
             <Key />
           </el-icon>
-          <span>{{  node.label  }}</span>
+          <span>{{ node.label }}</span>
         </el-space>
-        <span v-if="node.data.keyCount" class="tree-key-count">（{{  node.data.keyCount  }}）</span>
+        <span v-if="node.data.keyCount" class="tree-key-count">（{{ node.data.keyCount }}）</span>
       </div>
     </el-tree>
   </div>
@@ -71,7 +71,7 @@ const openExpand = (data: any) => {
   expandKey.value.push(data.id)
 }
 const closeExpand = (data: any) => {
-  expandKey.value = expandKey.value.filter(res => res !== data.id)
+  expandKey.value = expandKey.value.filter(res => !res.startsWith(data.id))
 }
 
 const handleKeys = (keys: string[]) => {
