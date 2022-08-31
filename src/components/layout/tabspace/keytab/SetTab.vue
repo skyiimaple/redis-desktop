@@ -2,6 +2,7 @@
 import CommonUtils from '@/utils/utils';
 import { onBeforeMount, ref } from 'vue';
 import RedisServer from '../../../../redis/RedisServer';
+import KeyTabHeader from './component/KeyTabHeader.vue';
 
 interface Set {
   key: string

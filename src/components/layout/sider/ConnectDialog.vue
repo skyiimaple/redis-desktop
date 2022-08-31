@@ -68,7 +68,7 @@ const afterclose = () => {
 <template>
   <el-dialog v-model="connectVisible" @opened="afterOpen" @closed="afterclose" :title="title" width="800px"
     :before-close="handleClose">
-    <el-form ref="ruleFormRef" :model="ruleForm" status-icon :rules="rules" label-width="auto" label-position="top"
+    <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="auto" label-position="top"
       class="ruleForm">
       <div class="connect-form">
         <el-form-item label="地址" prop="host">

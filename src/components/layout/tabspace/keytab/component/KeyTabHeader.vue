@@ -1,4 +1,5 @@
 <script setup lang='ts'>
+import RedisServer from '@/redis/RedisServer';
 import { RedisData } from '@/types/global';
 import mitter from '@/utils/bus';
 import CommonUtils from '@/utils/utils';
@@ -28,13 +29,9 @@ const copying = () => {
   emit('copying')
 }
 const refreshing = () => {
-  client.exists(props.myKey).then(res => {
-    if (res) {
-      getTTL()
-      emit('refreshing')
-    } else {
-      ElMessage.error(`【${props.myKey}】 键不存在`)
-    }
+  RedisServer.existsKey(client, props.myKey, () => {
+    getTTL()
+    emit('refreshing')
   })
 }
 const renameKey = (e: any) => {

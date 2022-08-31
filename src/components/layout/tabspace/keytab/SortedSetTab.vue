@@ -2,6 +2,7 @@
 import RedisServer from '../../../../redis/RedisServer';
 import { computed, ref } from 'vue'
 import CommonUtils from '@/utils/utils';
+import KeyTabHeader from './component/KeyTabHeader.vue';
 
 interface Zset {
   score: number

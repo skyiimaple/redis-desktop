@@ -2,11 +2,10 @@
 import RedisServer from '@/redis/RedisServer';
 import { KeyData } from '@/types/global';
 import { onBeforeMount, ref } from 'vue';
-import KeyTabHeader from './KeyTabHeader.vue';
 import { DocumentCopy } from '@element-plus/icons-vue';
 import CommonUtils from '@/utils/utils';
 import { ElMessage } from 'element-plus';
-import mitter from '@/utils/bus';
+import KeyTabHeader from './component/KeyTabHeader.vue';
 
 const props = defineProps<{ data: KeyData }>()
 const stringValue = ref('')

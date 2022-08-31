@@ -2,28 +2,55 @@ import { ElMessageBox, messageType } from "element-plus";
 
 export default class CommonUtils {
 
-
+  /**
+   * 生成指定长度的随机数
+   * @param len 随机数长度
+   * @returns 
+   */
   static randomString(len = 5) {
     return Math.random().toString(36).substr(-len);
   }
 
-
+  /**
+   * 判断对象是否为不存在
+   * @param obj 
+   * @returns 
+   */
   static isEmpty(obj: any) {
     return obj === null || obj === 'undefined' || obj === '' || obj.length === 0;
   }
 
+  /**
+   * 判断对象是否为存在
+   * @param obj 
+   * @returns 
+   */
   static isExist(obj: any) {
-    return !this.isEmpty(this.isEmpty);
+    return !this.isEmpty(obj);
   }
 
+  /**
+   * 获取当前时间
+   * @returns 
+   */
   static getCurTime() {
     return new Date().getTime();
   }
 
+  /**
+   * 生成唯一key
+   * @returns 
+   */
   static getKey() {
     return `${this.getCurTime()}_${this.randomString()}`;
   }
 
+  /**
+   * 给对象赋值
+   * @param target 被赋值对象
+   * @param data 值对象
+   * @param prop （可选）指定更新属性
+   */
   static setReactive(target: any = {}, data: any = {}, prop?: string) {
     if (prop) {
       target[prop] = data
@@ -61,6 +88,11 @@ export default class CommonUtils {
     return data
   }
 
+  /**
+   * 获取叶子节点的个数
+   * @param data 
+   * @returns 
+   */
   static getChildrenLen(data: any[]) {
     if (data.some((res: any) => res.value)) {
       return data.length
@@ -73,6 +105,11 @@ export default class CommonUtils {
     return count
   }
 
+  /**
+   * 计算字符的字节长度
+   * @param key 
+   * @returns 
+   */
   static getStringSize(key: string) {
     const size = Buffer.byteLength(key, 'utf-8')
     if (!size) {
@@ -83,6 +120,12 @@ export default class CommonUtils {
     return 1 * count + ['B', 'KB', 'MB', 'GB', 'TB'][i];
   }
 
+  /**
+   * 统一生成提示框
+   * @param text 
+   * @param type 
+   * @returns 
+   */
   static message(text: string, type: messageType = 'warning') {
     return ElMessageBox.confirm(text, '提示',
       {
