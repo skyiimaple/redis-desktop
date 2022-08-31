@@ -1,34 +1,3 @@
-<template>
-  <div class="filter-bar rv-flex-between">
-    <el-input class="filter-input" v-model="searchMatch" @keyup.enter.native="queryKeys">
-    </el-input>
-    <el-button type="primary" @click="queryKeys">查询</el-button>
-  </div>
-  <div class="tree-container">
-    <el-tree :data="treeData" :highlight-current="true" node-key="id" :default-expanded-keys="expandKey"
-      :props="defaultProps" @node-click="handleNodeClick" v-slot="{ node }" @node-expand="openExpand"
-      @node-collapse="closeExpand">
-      <div class="rv-flex-between custom-tree-node">
-        <el-space>
-          <div v-if="node.childNodes.length" class="tree-file-icon">
-            <el-icon v-if="!node.expanded">
-              <Folder />
-            </el-icon>
-            <el-icon v-else>
-              <FolderOpened />
-            </el-icon>
-          </div>
-          <el-icon v-else>
-            <Key />
-          </el-icon>
-          <span>{{ node.label }}</span>
-        </el-space>
-        <span v-if="node.data.keyCount" class="tree-key-count">（{{ node.data.keyCount }}）</span>
-      </div>
-    </el-tree>
-  </div>
-</template>
-
 <script lang="ts" setup>
 import { ElTree } from 'element-plus';
 import { onBeforeMount, reactive, Ref, ref, toRaw, watch, watchEffect } from 'vue';
@@ -36,6 +5,7 @@ import RedisServer from '../redis/RedisServer';
 import { RedisData } from '../types/global';
 import mitter from '../utils/bus';
 import CommonUtils from '../utils/utils';
+import AddKeyDialog from './AddKeyDialog.vue';
 
 
 interface Tree {
@@ -60,11 +30,15 @@ const defaultProps = {
 const searchMatch = ref<string>()
 const treeData = ref<Tree[]>([])
 const expandKey = ref<string[]>([])
+const dialogVisable = ref<boolean>(false)
 
 const handleNodeClick = (key: Tree) => {
   if (key.value) {
     mitter.emit('creatKeysTab', { data: props.data, key: key.value })
   }
+}
+const addKey = () => {
+  dialogVisable.value = true
 }
 
 const openExpand = (data: any) => {
@@ -127,6 +101,10 @@ const queryKeys = () => {
   });
 }
 
+const closeDialog = () => {
+  dialogVisable.value = false
+}
+
 watch(() => props.isOpen, (value) => {
   if (value && !treeData.value.length) {
     queryKeys()
@@ -140,8 +118,50 @@ mitter.on('renameKey', (data: any) => {
 })
 </script>
 
+<template>
+  <div class="add-btn rv-flex-between">
+    <el-button type="primary" class="rv-full-width" @click="addKey">新增Key</el-button>
+  </div>
+  <div class="filter-bar rv-flex-between">
+    <el-input class="filter-input" v-model="searchMatch" @keyup.enter.native="queryKeys">
+    </el-input>
+    <el-button type="primary" @click="queryKeys">查询</el-button>
+  </div>
+  <div class="tree-container">
+    <el-tree :data="treeData" :highlight-current="true" node-key="id" :default-expanded-keys="expandKey"
+      :props="defaultProps" @node-click="handleNodeClick" v-slot="{ node }" @node-expand="openExpand"
+      @node-collapse="closeExpand">
+      <div class="rv-flex-between custom-tree-node">
+        <el-space>
+          <div v-if="node.childNodes.length" class="tree-file-icon">
+            <el-icon v-if="!node.expanded">
+              <Folder />
+            </el-icon>
+            <el-icon v-else>
+              <FolderOpened />
+            </el-icon>
+          </div>
+          <el-icon v-else>
+            <Key />
+          </el-icon>
+          <span>{{ node.label }}</span>
+        </el-space>
+        <span v-if="node.data.keyCount" class="tree-key-count">（{{ node.data.keyCount }}）</span>
+      </div>
+    </el-tree>
+  </div>
+  <AddKeyDialog v-if="dialogVisable" :visible="dialogVisable" :key="data?.key" @updateChange="queryKeys"
+    @close-dialog="closeDialog">
+  </AddKeyDialog>
+</template>
 
 <style lang="scss" scoped>
+.add-btn {
+  margin: 0 8px;
+  padding: 8px 0 0;
+  border-top: 1px dashed #ccc;
+}
+
 .filter-bar {
 
   margin: 8px;

@@ -7,6 +7,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AddKeyDialog: typeof import('./src/components/AddKeyDialog.vue')['default']
     ConnectDialog: typeof import('./src/components/layout/sider/ConnectDialog.vue')['default']
     ControllerTab: typeof import('./src/components/layout/tabspace/ControllerTab.vue')['default']
     CreateRowDialog: typeof import('./src/components/layout/tabspace/keytab/component/CreateRowDialog.vue')['default']
