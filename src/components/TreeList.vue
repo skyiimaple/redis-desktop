@@ -104,6 +104,10 @@ const queryKeys = () => {
 const closeDialog = () => {
   dialogVisable.value = false
 }
+const updateChange = () => {
+  closeDialog()
+  queryKeys()
+}
 
 watch(() => props.isOpen, (value) => {
   if (value && !treeData.value.length) {
@@ -150,7 +154,7 @@ mitter.on('renameKey', (data: any) => {
       </div>
     </el-tree>
   </div>
-  <AddKeyDialog v-if="dialogVisable" :visible="dialogVisable" :key="data?.key" @updateChange="queryKeys"
+  <AddKeyDialog v-if="dialogVisable" :visible="dialogVisable" :redisKey="data?.key" @updateChange="updateChange"
     @close-dialog="closeDialog">
   </AddKeyDialog>
 </template>

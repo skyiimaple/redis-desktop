@@ -1,4 +1,6 @@
 <script setup lang='ts'>
+import RedisServer from '@/redis/RedisServer';
+import { ElMessage } from 'element-plus';
 import { reactive } from 'vue';
 
 const options = [
@@ -11,15 +13,44 @@ const options = [
 
 type props = {
   visible: boolean,
-  key: string
+  redisKey: string
 }
-const props = defineProps<props>()
+const { redisKey, visible } = defineProps<props>()
 const emits = defineEmits(['updateChange', 'closeDialog'])
+console.log('redisKey :>> ', redisKey);
+const client = RedisServer.getClient(redisKey)
 const params = reactive({
   key: '', type: 'string', value: '', field: '',
 })
 const saveData = () => {
-  emits('updateChange', params)
+  if (!params.key) {
+    ElMessage.error('请填写键')
+  }
+  setKeyByType().then((res) => {
+    if (res) {
+      emits('updateChange', params)
+    }
+  })
+}
+
+const setKeyByType = () => {
+  const { key, type, value, field } = params
+
+  switch (type) {
+    case 'string':
+      return client.set(key, value || 'New Value')
+    case 'hash':
+      return client.hset(key, field || 'New Field', value || 'New Value')
+    case 'list':
+      return client.lpush(key, value || 'New Member')
+    case 'set':
+      return client.sadd(key, value || 'New Member')
+    case 'zset':
+      return client.zadd(key, Number(field) || 0, value || 'New Member')
+  }
+  return new Promise((resolve, reject) => {
+    resolve(false)
+  })
 }
 const handleClose = () => {
   console.log('初始化 :>> ',)
