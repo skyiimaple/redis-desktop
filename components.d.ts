@@ -10,7 +10,6 @@ declare module '@vue/runtime-core' {
     AddKeyDialog: typeof import('./src/components/AddKeyDialog.vue')['default']
     ConnectDialog: typeof import('./src/components/layout/sider/ConnectDialog.vue')['default']
     ControllerTab: typeof import('./src/components/layout/tabspace/ControllerTab.vue')['default']
-    CreateRowDialog: typeof import('./src/components/layout/tabspace/keytab/component/CreateRowDialog.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
