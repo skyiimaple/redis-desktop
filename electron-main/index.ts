@@ -22,7 +22,7 @@ const createWindow = () => {
     height: height < 300 ? 700 : height,
     // transparent: true, // 窗口是否支持透明
     icon: path.join(__dirname, "../favicon.ico"),
-    // autoHideMenuBar: true,
+    autoHideMenuBar: true,
     // fullscreen: true,
     webPreferences: {
       webSecurity: true,
