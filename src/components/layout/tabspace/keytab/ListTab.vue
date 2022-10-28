@@ -1,9 +1,9 @@
-<script setup lang='ts'>
-import CommonUtils from '@/utils/utils';
-import { ElMessage } from 'element-plus';
-import { computed, onBeforeMount, ref } from 'vue';
-import RedisServer from '../../../../redis/RedisServer';
-import KeyTabHeader from './component/KeyTabHeader.vue';
+<script setup lang="ts">
+import CommonUtils from '@/utils/utils'
+import { ElMessage } from 'element-plus'
+import { computed, onBeforeMount, ref } from 'vue'
+import RedisServer from '../../../../redis/RedisServer'
+import KeyTabHeader from './component/KeyTabHeader.vue'
 
 interface List {
   key: string
@@ -23,14 +23,13 @@ const search = ref('')
 const filterTableData = computed(() => {
   return tableData.value.filter(
     (data) =>
-      !search.value ||
-      data.value.toString().toLowerCase().includes(search.value.toLowerCase())
+      !search.value || data.value.toString().toLowerCase().includes(search.value.toLowerCase()),
   )
 })
 
 const initData = () => {
-  client.lrange(key, 0, 200,).then(res => {
-    tableData.value = res.map(value => {
+  client.lrange(key, 0, 200).then((res) => {
+    tableData.value = res.map((value) => {
       return { key: value, value, uniq: CommonUtils.randomString() }
     })
   })
@@ -50,7 +49,7 @@ const saveRowData = () => {
     ElMessage.error('请填写Value')
     return
   }
-  client.rpush(key, listValue.value).then(res => {
+  client.rpush(key, listValue.value).then((res) => {
     if (res) {
       initData()
       closeDialog()
@@ -60,14 +59,16 @@ const saveRowData = () => {
 
 // 删除值
 const handleDelete = (row: List) => {
-  CommonUtils.message('是否删除当前行数据?', 'error').then(() => {
-    client.lrem(key, 1, row.key).then(res => {
-      if (res === 1) {
-        ElMessage.success('删除成功')
-        initData()
-      }
+  CommonUtils.message('是否删除当前行数据?', 'error')
+    .then(() => {
+      client.lrem(key, 1, row.key).then((res) => {
+        if (res === 1) {
+          ElMessage.success('删除成功')
+          initData()
+        }
+      })
     })
-  }).catch(e => { })
+    .catch((e) => {})
 }
 onBeforeMount(() => {
   initData()
@@ -81,7 +82,11 @@ onBeforeMount(() => {
   </div>
   <div>
     <el-table :data="filterTableData" border>
-      <el-table-column type="index" :label="'ID (Total: ' + filterTableData.length + ')'" width="150">
+      <el-table-column
+        type="index"
+        :label="'ID (Total: ' + filterTableData.length + ')'"
+        width="150"
+      >
       </el-table-column>
       <!-- <el-table-column label="Key" prop="key" sortable /> -->
       <el-table-column label="Value" prop="value" sortable />
@@ -90,7 +95,9 @@ onBeforeMount(() => {
           <el-input v-model="search" size="small" />
         </template>
         <template #default="scope">
-          <el-button size="small" text type="danger" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button size="small" text type="danger" @click="handleDelete(scope.row)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -118,5 +125,4 @@ onBeforeMount(() => {
   </el-dialog>
 </template>
 
-<style lang='scss' scoped>
-</style>
+<style lang="scss" scoped></style>

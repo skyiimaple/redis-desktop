@@ -1,26 +1,29 @@
-<script setup lang='ts'>
-import RedisServer from '@/redis/RedisServer';
-import { ElMessage } from 'element-plus';
-import { reactive } from 'vue';
+<script setup lang="ts">
+import RedisServer from '@/redis/RedisServer'
+import { ElMessage } from 'element-plus'
+import { reactive } from 'vue'
 
 const options = [
-  { value: 'string', label: 'String', },
-  { value: 'hash', label: 'Hash', },
-  { value: 'list', label: 'List', },
-  { value: 'set', label: 'Set', },
-  { value: 'zset', label: 'Zset', },
+  { value: 'string', label: 'String' },
+  { value: 'hash', label: 'Hash' },
+  { value: 'list', label: 'List' },
+  { value: 'set', label: 'Set' },
+  { value: 'zset', label: 'Zset' },
 ]
 
 type props = {
-  visible: boolean,
+  visible: boolean
   redisKey: string
 }
 const { redisKey, visible } = defineProps<props>()
 const emits = defineEmits(['updateChange', 'closeDialog'])
-console.log('redisKey :>> ', redisKey);
+console.log('redisKey :>> ', redisKey)
 const client = RedisServer.getClient(redisKey)
 const params = reactive({
-  key: '', type: 'string', value: '', field: '',
+  key: '',
+  type: 'string',
+  value: '',
+  field: '',
 })
 const saveData = () => {
   if (!params.key) {
@@ -53,7 +56,7 @@ const setKeyByType = () => {
   })
 }
 const handleClose = () => {
-  console.log('初始化 :>> ',)
+  console.log('初始化 :>> ')
   emits('closeDialog')
 }
 </script>
@@ -66,7 +69,12 @@ const handleClose = () => {
       </el-form-item>
       <el-form-item label="Type">
         <el-select v-model="params.type" class="rv-full-width">
-          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="Field" v-if="['zset', 'hash'].includes(params.type)">
@@ -85,5 +93,4 @@ const handleClose = () => {
   </el-dialog>
 </template>
 
-<style lang='scss' scoped>
-</style>
+<style lang="scss" scoped></style>

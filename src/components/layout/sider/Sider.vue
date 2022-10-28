@@ -1,9 +1,9 @@
-<script setup lang='ts'>
-import { onBeforeMount, ref } from "vue"
-import RedisServer from "../../../redis/RedisServer"
-import { RedisData } from "../../../types/global"
-import SiderHeader from "./SiderHeader.vue"
-import SiderContent from "./SiderContent.vue"
+<script setup lang="ts">
+import { onBeforeMount, ref } from 'vue'
+import RedisServer from '../../../redis/RedisServer'
+import { RedisData } from '../../../types/global'
+import SiderHeader from './SiderHeader.vue'
+import SiderContent from './SiderContent.vue'
 
 // console.log(window);
 const redisList = ref<RedisData[]>([])
@@ -16,7 +16,6 @@ const reset = () => {
       redisList.value.push(RedisServer.connectMaps[key])
     }
   }
-
 }
 
 onBeforeMount(() => {
@@ -26,9 +25,8 @@ onBeforeMount(() => {
 
 <template>
   <SiderHeader :redisList="redisList"></SiderHeader>
-  <el-divider style="margin: 7px 0 0;" />
+  <el-divider style="margin: 7px 0 0" />
   <SiderContent :redisList="redisList" @resetConnect="reset"></SiderContent>
 </template>
 
-<style lang='scss' scoped>
-</style>
+<style lang="scss" scoped></style>

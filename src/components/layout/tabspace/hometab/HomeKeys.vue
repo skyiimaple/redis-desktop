@@ -1,13 +1,13 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 import type { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
-import { computed } from 'vue';
+import { computed } from 'vue'
 type props = {
   db: object | any
 }
 const props = defineProps<props>()
 const data = props.db
 const tableData = computed(() => {
-  const dbs: DB[] = [];
+  const dbs: DB[] = []
   for (const key in data) {
     if (Object.prototype.hasOwnProperty.call(data, key)) {
       if (key.startsWith('db')) {
@@ -17,7 +17,7 @@ const tableData = computed(() => {
           keys: keys.split('=')[1],
           expires: expires.split('=')[1],
           avg_ttl: avg_ttl.split('=')[1],
-        });
+        })
       }
     }
   }
@@ -30,15 +30,13 @@ interface DB {
   avg_ttl: string
   expires: string
 }
-
 </script>
 
 <template>
-  <el-card shadow="always"><template #header>
+  <el-card shadow="always"
+    ><template #header>
       <div class="title-icon-label">
-        <el-icon>
-          <Histogram></Histogram>
-        </el-icon><span>键值统计</span>
+        <el-icon> <Histogram></Histogram> </el-icon><span>键值统计</span>
       </div>
     </template>
     <el-table :data="tableData">
@@ -50,5 +48,4 @@ interface DB {
   </el-card>
 </template>
 
-<style lang='scss' >
-</style>
+<style lang="scss"></style>

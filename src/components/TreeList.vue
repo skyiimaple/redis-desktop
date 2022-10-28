@@ -1,23 +1,22 @@
 <script lang="ts" setup>
-import { ElTree } from 'element-plus';
-import { onBeforeMount, reactive, Ref, ref, toRaw, watch, watchEffect } from 'vue';
-import RedisServer from '../redis/RedisServer';
-import { RedisData } from '../types/global';
-import mitter from '../utils/bus';
-import CommonUtils from '../utils/utils';
-import AddKeyDialog from './AddKeyDialog.vue';
-
+import { ElTree } from 'element-plus'
+import { onBeforeMount, reactive, Ref, ref, toRaw, watch, watchEffect } from 'vue'
+import RedisServer from '../redis/RedisServer'
+import { RedisData } from '../types/global'
+import mitter from '../utils/bus'
+import CommonUtils from '../utils/utils'
+import AddKeyDialog from './AddKeyDialog.vue'
 
 interface Tree {
   label: string
   children?: Tree[]
-  value?: string,
-  pid?: string,
-  id?: string,
+  value?: string
+  pid?: string
+  id?: string
   keyCount: number
 }
 type props = {
-  data: RedisData,
+  data: RedisData
   isOpen: boolean
 }
 const props = defineProps<props>()
@@ -25,7 +24,7 @@ const defaultProps = {
   children: 'children',
   label: 'label',
   value: 'value',
-  keyCount: 'keyCount'
+  keyCount: 'keyCount',
 }
 const searchMatch = ref<string>()
 const treeData = ref<Tree[]>([])
@@ -45,7 +44,7 @@ const openExpand = (data: any) => {
   expandKey.value.push(data.id)
 }
 const closeExpand = (data: any) => {
-  expandKey.value = expandKey.value.filter(res => !res.startsWith(data.id))
+  expandKey.value = expandKey.value.filter((res) => !res.startsWith(data.id))
 }
 
 const handleKeys = (keys: string[]) => {
@@ -56,7 +55,7 @@ const getTreeList = (keys: string[]) => {
   if (!keys.length) return []
   const list = new Set()
   const arr: any = []
-  keys.forEach(key => {
+  keys.forEach((key) => {
     const separator = props.data.separator || ':'
     const index = key.indexOf(separator)
     if (index > -1) {
@@ -77,10 +76,13 @@ const getTreeList = (keys: string[]) => {
       arr.push({ label: key, value: key, pid: '' })
     }
   })
-  return CommonUtils.formatTree(Array.from(list).map((res: any) => {
-    const item = JSON.parse(res)
-    return item
-  }), 'id').concat(arr)
+  return CommonUtils.formatTree(
+    Array.from(list).map((res: any) => {
+      const item = JSON.parse(res)
+      return item
+    }),
+    'id',
+  ).concat(arr)
 }
 
 const queryKeys = () => {
@@ -89,16 +91,16 @@ const queryKeys = () => {
   const COUNT = 5000
   const match = searchMatch.value ? `*${searchMatch.value}*` : '*'
   const stream = client.scanStream({ match, count: COUNT })
-  stream.on('data', keys => {
+  stream.on('data', (keys) => {
     data = data.concat(keys)
     if (data.length >= COUNT) {
-      stream.pause();
+      stream.pause()
       handleKeys(data)
     }
-  });
+  })
   stream.on('end', () => {
     handleKeys(data)
-  });
+  })
 }
 
 const closeDialog = () => {
@@ -109,11 +111,14 @@ const updateChange = () => {
   queryKeys()
 }
 
-watch(() => props.isOpen, (value) => {
-  if (value && !treeData.value.length) {
-    queryKeys()
-  }
-})
+watch(
+  () => props.isOpen,
+  (value) => {
+    if (value && !treeData.value.length) {
+      queryKeys()
+    }
+  },
+)
 mitter.on('refreshClient', () => {
   queryKeys()
 })
@@ -132,30 +137,37 @@ mitter.on('renameKey', (data: any) => {
     <el-button type="primary" @click="queryKeys">查询</el-button>
   </div>
   <div class="tree-container">
-    <el-tree :data="treeData" :highlight-current="true" node-key="id" :default-expanded-keys="expandKey"
-      :props="defaultProps" @node-click="handleNodeClick" v-slot="{ node }" @node-expand="openExpand"
-      @node-collapse="closeExpand">
+    <el-tree
+      :data="treeData"
+      :highlight-current="true"
+      node-key="id"
+      :default-expanded-keys="expandKey"
+      :props="defaultProps"
+      @node-click="handleNodeClick"
+      v-slot="{ node }"
+      @node-expand="openExpand"
+      @node-collapse="closeExpand"
+    >
       <div class="rv-flex-between custom-tree-node">
         <el-space>
           <div v-if="node.childNodes.length" class="tree-file-icon">
-            <el-icon v-if="!node.expanded">
-              <Folder />
-            </el-icon>
-            <el-icon v-else>
-              <FolderOpened />
-            </el-icon>
+            <el-icon v-if="!node.expanded"> <Folder /> </el-icon>
+            <el-icon v-else> <FolderOpened /> </el-icon>
           </div>
-          <el-icon v-else>
-            <Key />
-          </el-icon>
+          <el-icon v-else> <Key /> </el-icon>
           <span>{{ node.label }}</span>
         </el-space>
         <span v-if="node.data.keyCount" class="tree-key-count">（{{ node.data.keyCount }}）</span>
       </div>
     </el-tree>
   </div>
-  <AddKeyDialog v-if="dialogVisable" :visible="dialogVisable" :redisKey="data?.key" @updateChange="updateChange"
-    @close-dialog="closeDialog">
+  <AddKeyDialog
+    v-if="dialogVisable"
+    :visible="dialogVisable"
+    :redisKey="data?.key"
+    @updateChange="updateChange"
+    @close-dialog="closeDialog"
+  >
   </AddKeyDialog>
 </template>
 
@@ -167,11 +179,10 @@ mitter.on('renameKey', (data: any) => {
 }
 
 .filter-bar {
-
   margin: 8px;
 
   .filter-input {
-    width: 80%
+    width: 80%;
   }
 }
 

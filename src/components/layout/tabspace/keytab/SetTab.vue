@@ -1,9 +1,9 @@
-<script setup lang='ts'>
-import CommonUtils from '@/utils/utils';
-import { ElMessage } from 'element-plus';
-import { onBeforeMount, ref } from 'vue';
-import RedisServer from '../../../../redis/RedisServer';
-import KeyTabHeader from './component/KeyTabHeader.vue';
+<script setup lang="ts">
+import CommonUtils from '@/utils/utils'
+import { ElMessage } from 'element-plus'
+import { onBeforeMount, ref } from 'vue'
+import RedisServer from '../../../../redis/RedisServer'
+import KeyTabHeader from './component/KeyTabHeader.vue'
 
 interface Set {
   key: string
@@ -24,24 +24,25 @@ const search = ref('')
 
 const initData = () => {
   const setList: Set[] = []
-  const scanOption = { match: '*', count: PageSize };
+  const scanOption = { match: '*', count: PageSize }
   const scanStream = client.sscanStream(key, scanOption)
   scanStream.on('data', (reply: string[]) => {
-    setList.push(...reply.map(value => {
-      return { key: value, value, uniq: CommonUtils.randomString() }
-    }))
+    setList.push(
+      ...reply.map((value) => {
+        return { key: value, value, uniq: CommonUtils.randomString() }
+      }),
+    )
     if (tableData.value.length >= PageSize) {
-      scanStream.pause();
+      scanStream.pause()
       tableData.value = setList
     }
   })
 
   scanStream.on('end', () => {
     tableData.value = setList
-  });
+  })
 
-  scanStream.on('error', e => {
-  });
+  scanStream.on('error', (e) => {})
 }
 const createRow = () => {
   dialogVisible.value = true
@@ -58,7 +59,7 @@ const saveRowData = () => {
     ElMessage.error('请填写Value')
     return
   }
-  client.sadd(key, setValue.value).then(res => {
+  client.sadd(key, setValue.value).then((res) => {
     if (res) {
       initData()
       closeDialog()
@@ -68,14 +69,16 @@ const saveRowData = () => {
 
 // 删除值
 const handleDelete = (row: Set) => {
-  CommonUtils.message('是否删除当前行数据?', 'error').then(() => {
-    client.srem(key, row.key).then(res => {
-      if (res === 1) {
-        ElMessage.success('删除成功')
-        initData()
-      }
+  CommonUtils.message('是否删除当前行数据?', 'error')
+    .then(() => {
+      client.srem(key, row.key).then((res) => {
+        if (res === 1) {
+          ElMessage.success('删除成功')
+          initData()
+        }
+      })
     })
-  }).catch()
+    .catch()
 }
 onBeforeMount(() => {
   initData()
@@ -83,7 +86,13 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <KeyTabHeader :myKey="key" type="set" :client="client" :hostData="hostData" @refreshing="initData"></KeyTabHeader>
+  <KeyTabHeader
+    :myKey="key"
+    type="set"
+    :client="client"
+    :hostData="hostData"
+    @refreshing="initData"
+  ></KeyTabHeader>
   <div class="divider-btn">
     <el-button type="primary" @click="createRow">添加新行</el-button>
   </div>
@@ -97,7 +106,9 @@ onBeforeMount(() => {
           <el-input v-model="search" size="small" />
         </template>
         <template #default="scope">
-          <el-button size="small" text type="danger" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button size="small" text type="danger" @click="handleDelete(scope.row)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -125,5 +136,4 @@ onBeforeMount(() => {
   </el-dialog>
 </template>
 
-<style lang='scss' scoped>
-</style>
+<style lang="scss" scoped></style>

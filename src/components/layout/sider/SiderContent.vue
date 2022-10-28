@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { reactive, ref, toRaw } from 'vue'
 import RedisServer from '../../../redis/RedisServer'
@@ -6,8 +6,9 @@ import { RedisData } from '../../../types/global'
 import mitter from '../../../utils/bus'
 import CommonUtils from '../../../utils/utils'
 
-type props = {    // 设置类型
-  redisList: RedisData[],
+type props = {
+  // 设置类型
+  redisList: RedisData[]
 }
 
 const props = defineProps<props>()
@@ -57,7 +58,7 @@ const deleteConnect = (data: any) => {
 }
 const rediHome = (data: any) => {
   // console.log('RedisServer.getRedisInfo(key) :>> ', RedisServer.getRedisInfo(key));
-  RedisServer.getRedisInfo(data.key).then(res => {
+  RedisServer.getRedisInfo(data.key).then((res) => {
     mitter.emit('createHomeTab', { data, info: res.infoObj, db: res.infoMap.get('Keyspace') })
   })
 }
@@ -75,12 +76,16 @@ const creatController = (data: any) => {
 <template>
   <div>
     <el-collapse v-model="activeNames" accordion>
-      <el-collapse-item class="collapse-item" :style="{ '--connectcolor': data.color }" :name="index + 1"
-        v-for="(data, index) of redisList">
+      <el-collapse-item
+        class="collapse-item"
+        :style="{ '--connectcolor': data.color }"
+        :name="index + 1"
+        v-for="(data, index) of redisList"
+      >
         <template #title>
           <div class="title-template">
             <span class="title-text">{{ data.name }}</span>
-            <el-space style="font-size: 16px;">
+            <el-space style="font-size: 16px">
               <div title="Redis信息" class="rv-flex">
                 <HomeFilled class="el-icon" @click.stop="rediHome(data)" />
               </div>
@@ -104,9 +109,7 @@ const creatController = (data: any) => {
                       <el-dropdown-item @click="deleteConnect(data)">
                         <Delete class="dropdown-icon" />删除连接
                       </el-dropdown-item>
-                      <el-dropdown-item>
-                        <Cpu class="dropdown-icon" />内存分析
-                      </el-dropdown-item>
+                      <el-dropdown-item> <Cpu class="dropdown-icon" />内存分析 </el-dropdown-item>
                       <el-dropdown-item divided>
                         <WarnTriangleFilled color="#f56c6c" class="dropdown-icon" />删除所有键
                       </el-dropdown-item>
@@ -115,8 +118,12 @@ const creatController = (data: any) => {
                 </el-dropdown>
               </div>
               <div title="标记颜色" @click.stop="">
-                <el-color-picker v-model="data.color" size="small" @change="saveSignColor($event, data)"
-                  :predefine="predefineColors" />
+                <el-color-picker
+                  v-model="data.color"
+                  size="small"
+                  @change="saveSignColor($event, data)"
+                  :predefine="predefineColors"
+                />
               </div>
             </el-space>
           </div>
@@ -128,12 +135,19 @@ const creatController = (data: any) => {
     </el-collapse>
   </div>
 
-  <ConnectDialog v-if="connectVisible" :connectVisible="connectVisible" :connectData="curData" title="新建连接"
-    @cancel-connect="closeDialog" @handle-close="handleClose" @save-connect="saveConnect">
+  <ConnectDialog
+    v-if="connectVisible"
+    :connectVisible="connectVisible"
+    :connectData="curData"
+    title="新建连接"
+    @cancel-connect="closeDialog"
+    @handle-close="handleClose"
+    @save-connect="saveConnect"
+  >
   </ConnectDialog>
 </template>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .collapse-item {
   position: relative;
 
@@ -166,7 +180,6 @@ const creatController = (data: any) => {
     color: var(--connectcolor);
     font-weight: bold;
   }
-
 }
 
 .el-icon {

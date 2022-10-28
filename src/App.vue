@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import Sider from './components/layout/sider/Sider.vue';
-import TabSpace from './components/layout/tabspace/TabSpace.vue';
+import { ref } from 'vue'
+import Sider from './components/layout/sider/Sider.vue'
+import TabSpace from './components/layout/tabspace/TabSpace.vue'
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 const myWidth = ref('400px')
@@ -15,10 +15,13 @@ const mouseup = () => {
 }
 const mousemove = (event: any) => {
   /* 阻止浏览器默认事件，防止触发浏览器的手势功能 */
-  event.preventDefault();
-  const { x, view: { innerWidth } } = event;
+  event.preventDefault()
+  const {
+    x,
+    view: { innerWidth },
+  } = event
   // 最小400  最大不能超过可视界面的一半
-  if (x >= 400 && x <= (innerWidth / 2)) {
+  if (x >= 400 && x <= innerWidth / 2) {
     myWidth.value = x + 'px'
   }
 }
@@ -52,13 +55,15 @@ const mousemove = (event: any) => {
 }
 
 .common-layout {
-
   height: 100%;
   width: 100%;
 
   .el-aside,
   .el-main {
     padding: 16px 10px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 

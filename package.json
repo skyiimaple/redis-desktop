@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
+    "eslint": "eslint --ext .js,.ts,.vue  --fix src",
     "electron-build": "rimraf dist && vite build && electron-builder"
   },
   "dependencies": {
@@ -28,6 +29,8 @@
     "unplugin-auto-import": "^0.11.1",
     "unplugin-vue-components": "^0.22.4",
     "vite": "^2.9.9",
+    "prettier": "^2.7.1",
+    "eslint": "^8.26.0",
     "vite-plugin-commonjs": "^0.5.2",
     "vite-plugin-electron": "^0.4.4",
     "vite-plugin-importer": "^0.2.5",

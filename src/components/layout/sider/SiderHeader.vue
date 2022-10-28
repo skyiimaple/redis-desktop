@@ -1,11 +1,11 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 import { ref } from 'vue'
 import RedisServer from '../../../redis/RedisServer'
 import { RedisData } from '../../../types/global'
-import ConnectDialog from './ConnectDialog.vue';
+import ConnectDialog from './ConnectDialog.vue'
 
 type props = {
-  redisList: RedisData[],
+  redisList: RedisData[]
 }
 
 const props = defineProps<props>()
@@ -26,7 +26,9 @@ const handleClose = () => {
 <template>
   <div class="rv-flex-between">
     <div class="sider-btn">
-      <el-button type="primary" class="rv-full-width" @click="connectVisible = true">新建连接</el-button>
+      <el-button type="primary" class="rv-full-width" @click="connectVisible = true"
+        >新建连接</el-button
+      >
     </div>
     <!-- <el-button @click="creatRandomNumber">创建随机数</el-button> -->
     <div>
@@ -34,12 +36,18 @@ const handleClose = () => {
       <el-button type="info" icon="List" circle />
     </div>
   </div>
-  <ConnectDialog :connectVisible="connectVisible" model="create" title="新建连接" @cancel-connect="closeDialog"
-    @handle-close="handleClose" @save-connect="saveConnect">
+  <ConnectDialog
+    :connectVisible="connectVisible"
+    model="create"
+    title="新建连接"
+    @cancel-connect="closeDialog"
+    @handle-close="handleClose"
+    @save-connect="saveConnect"
+  >
   </ConnectDialog>
 </template>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .sider-btn {
   flex: 1;
   padding-right: 10px;

@@ -1,6 +1,6 @@
-<script setup lang='ts'>
-import { Search } from '@element-plus/icons-vue';
-import { computed, ref } from 'vue';
+<script setup lang="ts">
+import { Search } from '@element-plus/icons-vue'
+import { computed, ref } from 'vue'
 // import Search from ''
 type props = {
   infoData: any
@@ -9,15 +9,15 @@ const props = defineProps<props>()
 const infoData = props.infoData
 const searchValue = ref('')
 const tableData = computed(() => {
-  const dbs: Info[] = [];
+  const dbs: Info[] = []
   for (const key in infoData) {
     if (Object.prototype.hasOwnProperty.call(infoData, key)) {
       if (searchValue.value) {
         if (key.includes(searchValue.value)) {
-          dbs.push({ values: infoData[key], key: key, });
+          dbs.push({ values: infoData[key], key: key })
         }
       } else {
-        dbs.push({ values: infoData[key], key: key, });
+        dbs.push({ values: infoData[key], key: key })
       }
     }
   }
@@ -28,7 +28,6 @@ interface Info {
   key: string
   values: string
 }
-
 </script>
 
 <template>
@@ -53,5 +52,4 @@ interface Info {
   </el-card>
 </template>
 
-<style lang='scss'>
-</style>
+<style lang="scss"></style>

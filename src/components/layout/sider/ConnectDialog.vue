@@ -1,14 +1,15 @@
-<script setup lang='ts'>import { reactive, ref, toRaw } from 'vue'
+<script setup lang="ts">
+import { reactive, ref, toRaw } from 'vue'
 import { ElMessage, FormInstance } from 'element-plus'
-import RedisServer from '../../../redis/RedisServer';
-import CommonUtils from '../../../utils/utils';
+import RedisServer from '../../../redis/RedisServer'
+import CommonUtils from '../../../utils/utils'
 
 const ruleFormRef = ref<FormInstance>()
 type props = {
-  connectVisible: boolean,
-  title: string,
-  key?: string,
-  model?: 'create' | 'edit' | 'view',
+  connectVisible: boolean
+  title: string
+  key?: string
+  model?: 'create' | 'edit' | 'view'
   connectData?: any
 }
 const defaultData = {
@@ -17,7 +18,7 @@ const defaultData = {
   password: '',
   username: '',
   name: '',
-  key: ''
+  key: '',
 }
 
 const props = defineProps<props>()
@@ -29,9 +30,7 @@ const check = (rule: any, value: any, callback: any) => {
   }
 }
 
-
 let ruleForm = reactive<any>(defaultData)
-
 
 const rules = reactive({
   host: [{ validator: check, trigger: 'blur', required: true }],
@@ -53,7 +52,7 @@ const createConnect = () => {
   emits('saveConnect', toRaw(ruleForm))
 }
 const handleClose = () => {
-  console.log('初始化 :>> ',)
+  console.log('初始化 :>> ')
   emits('handleClose')
 }
 const afterOpen = () => {
@@ -66,10 +65,23 @@ const afterclose = () => {
 </script>
 
 <template>
-  <el-dialog v-model="connectVisible" @opened="afterOpen" @closed="afterclose" :title="title" width="800px" center
-    :before-close="handleClose">
-    <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="auto" label-position="top"
-      class="ruleForm">
+  <el-dialog
+    v-model="connectVisible"
+    @opened="afterOpen"
+    @closed="afterclose"
+    :title="title"
+    width="800px"
+    center
+    :before-close="handleClose"
+  >
+    <el-form
+      ref="ruleFormRef"
+      :model="ruleForm"
+      :rules="rules"
+      label-width="auto"
+      label-position="top"
+      class="ruleForm"
+    >
       <div class="connect-form">
         <el-form-item label="地址" prop="host">
           <el-input v-model="ruleForm.host" />
@@ -98,7 +110,7 @@ const afterclose = () => {
   </el-dialog>
 </template>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .connect-form {
   display: grid;
   grid-template-columns: repeat(2, 50%);

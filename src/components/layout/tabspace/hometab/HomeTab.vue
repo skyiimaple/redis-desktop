@@ -1,7 +1,7 @@
-<script setup lang='ts'>
-import HomeStatus from './HomeStatus.vue';
-import HomeKeys from './HomeKeys.vue';
-import HomeInfo from './HomeInfo.vue';
+<script setup lang="ts">
+import HomeStatus from './HomeStatus.vue'
+import HomeKeys from './HomeKeys.vue'
+import HomeInfo from './HomeInfo.vue'
 type props = {
   infoData: any
 }
@@ -16,5 +16,4 @@ const props = defineProps<props>()
   <home-info :infoData="infoData.info"></home-info>
 </template>
 
-<style lang='scss' scoped>
-</style>
+<style lang="scss" scoped></style>

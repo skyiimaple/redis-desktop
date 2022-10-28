@@ -1,8 +1,8 @@
-<script setup lang='ts'>
-import RedisServer from '@/redis/RedisServer';
-import CommonUtils from '@/utils/utils';
-import { ElMessage } from 'element-plus';
-import { computed, onBeforeMount, reactive, ref } from 'vue';
+<script setup lang="ts">
+import RedisServer from '@/redis/RedisServer'
+import CommonUtils from '@/utils/utils'
+import { ElMessage } from 'element-plus'
+import { computed, onBeforeMount, reactive, ref } from 'vue'
 
 interface Hash {
   key: string
@@ -20,7 +20,7 @@ const dialogVisible = ref<boolean>(false)
 const dialogTitle = ref<string>('添加（Hash）')
 const params = reactive({ fieldName: '', value: '' })
 const loading = ref<boolean>(false)
-let editRowItem: Hash | null;
+let editRowItem: Hash | null
 
 // 表格数据
 const filterTableData = computed(() => {
@@ -29,7 +29,7 @@ const filterTableData = computed(() => {
     (data) =>
       !search.value ||
       data.key.toLowerCase().includes(search.value.toLowerCase()) ||
-      data.value.toLowerCase().includes(search.value.toLowerCase())
+      data.value.toLowerCase().includes(search.value.toLowerCase()),
   )
 })
 
@@ -37,38 +37,37 @@ const filterTableData = computed(() => {
 const initData = () => {
   RedisServer.existsKey(client, key, () => {
     const hashList: Hash[] = []
-    const scanOption = { match: '*', count: PageSize };
+    const scanOption = { match: '*', count: PageSize }
     const scanStream = client.hscanStream(key, scanOption)
-    scanStream.on('data', reply => {
+    scanStream.on('data', (reply) => {
       hashList.push(...getHashData(reply))
       if (tableData.value.length >= PageSize) {
-        scanStream.pause();
+        scanStream.pause()
         tableData.value = hashList
       }
     })
 
     scanStream.on('end', () => {
       tableData.value = hashList
-    });
+    })
 
-    scanStream.on('error', e => {
-    });
+    scanStream.on('error', (e) => {})
   })
 }
 
 // 格式化获取到的Hash 数组
 const getHashData = (list: any) => {
-  const data: Hash[] = [];
+  const data: Hash[] = []
   if (list?.length) {
     for (var i = 0; i < list.length; i += 2) {
       data.push({
         key: list[i],
         value: list[i + 1],
         uniq: CommonUtils.randomString(),
-      });
+      })
     }
   }
-  return data;
+  return data
 }
 
 const createRow = () => {
@@ -90,7 +89,7 @@ const saveRowData = () => {
     return
   }
   loading.value = true
-  client.hset(key, params.fieldName, params.value).then(res => {
+  client.hset(key, params.fieldName, params.value).then((res) => {
     if (editRowItem && editRowItem.key !== params.fieldName) {
       client.hdel(key, editRowItem.key)
     }
@@ -109,17 +108,18 @@ const editRowData = (row: Hash) => {
   dialogVisible.value = true
 }
 
-
 // 删除值
 const handleDelete = (row: Hash) => {
-  CommonUtils.message('是否删除当前行数据?', 'error').then(() => {
-    client.hdel(key, row.key).then(res => {
-      if (res === 1) {
-        ElMessage.success('删除成功')
-        initData()
-      }
+  CommonUtils.message('是否删除当前行数据?', 'error')
+    .then(() => {
+      client.hdel(key, row.key).then((res) => {
+        if (res === 1) {
+          ElMessage.success('删除成功')
+          initData()
+        }
+      })
     })
-  }).catch(e => { })
+    .catch((e) => {})
 }
 
 onBeforeMount(() => {
@@ -128,13 +128,23 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <KeyTabHeader :myKey="key" type="hash" :client="client" :hostData="hostData" @refreshing="initData"></KeyTabHeader>
+  <KeyTabHeader
+    :myKey="key"
+    type="hash"
+    :client="client"
+    :hostData="hostData"
+    @refreshing="initData"
+  ></KeyTabHeader>
   <div class="divider-btn">
     <el-button type="primary" @click="createRow">添加新行</el-button>
   </div>
   <div>
     <el-table :data="filterTableData" border>
-      <el-table-column type="index" :label="'ID (Total: ' + filterTableData.length + ')'" width="150">
+      <el-table-column
+        type="index"
+        :label="'ID (Total: ' + filterTableData.length + ')'"
+        width="150"
+      >
       </el-table-column>
       <el-table-column label="Key" prop="key" sortable />
       <el-table-column label="Value" prop="value" sortable />
@@ -143,8 +153,12 @@ onBeforeMount(() => {
           <el-input v-model="search" size="small" />
         </template>
         <template #default="scope">
-          <el-button size="small" text type="primary" @click="editRowData(scope.row)">修改</el-button>
-          <el-button size="small" text type="danger" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button size="small" text type="primary" @click="editRowData(scope.row)"
+            >修改</el-button
+          >
+          <el-button size="small" text type="danger" @click="handleDelete(scope.row)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -175,5 +189,4 @@ onBeforeMount(() => {
   </el-dialog>
 </template>
 
-<style lang='scss' scoped>
-</style>
+<style lang="scss" scoped></style>

@@ -1,29 +1,34 @@
-<script setup lang='ts'>
-import RedisServer from '@/redis/RedisServer';
-import { RedisData } from '@/types/global';
-import mitter from '@/utils/bus';
-import CommonUtils from '@/utils/utils';
-import { Delete, DocumentCopy, Refresh } from '@element-plus/icons-vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
-import Redis from 'ioredis';
-import { onBeforeMount, ref } from 'vue';
+<script setup lang="ts">
+import RedisServer from '@/redis/RedisServer'
+import { RedisData } from '@/types/global'
+import mitter from '@/utils/bus'
+import CommonUtils from '@/utils/utils'
+import { Delete, DocumentCopy, Refresh } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import Redis from 'ioredis'
+import { onBeforeMount, ref } from 'vue'
 
-
-
-const props = defineProps<{ myKey: string | any, type: string, client: Redis, hostData: RedisData }>()
+const props = defineProps<{
+  myKey: string | any
+  type: string
+  client: Redis
+  hostData: RedisData
+}>()
 const curKey = ref(props.myKey)
 const keyTTL = ref<number>(-1)
 const client = props.client
 const emit = defineEmits(['copying', 'refreshing', 'deleting', 'renameKey'])
 const deleting = () => {
-  CommonUtils.message(`即将删除键【${props.myKey}】，是否确认？`).then(() => {
-    client.del(props.myKey).then(res => {
-      ElMessage.success('删除成功')
-      mitter.emit('refreshClient')
-      const tabKey = props.hostData.key + '_' + props.myKey
-      mitter.emit('closeTab', { tabKey, type: 'one' })
+  CommonUtils.message(`即将删除键【${props.myKey}】，是否确认？`)
+    .then(() => {
+      client.del(props.myKey).then((res) => {
+        ElMessage.success('删除成功')
+        mitter.emit('refreshClient')
+        const tabKey = props.hostData.key + '_' + props.myKey
+        mitter.emit('closeTab', { tabKey, type: 'one' })
+      })
     })
-  }).catch(e => { })
+    .catch((e) => {})
 }
 const copying = () => {
   emit('copying')
@@ -38,51 +43,68 @@ const renameKey = (e: any) => {
   if (curKey.value === props.myKey) {
     return
   }
-  CommonUtils.message(`是否修改名字${props.myKey} -> ${curKey.value}`).then(() => {
-    client.rename(props.myKey, curKey.value).then(res => {
-      if (res === 'OK') {
-        ElMessage.success('修改成功')
-        mitter.emit('renameKey', { old: props.myKey, new: curKey.value, hostData: props.hostData })
-      }
-    }).catch(e => {
-      ElMessage.error(e.message);
+  CommonUtils.message(`是否修改名字${props.myKey} -> ${curKey.value}`)
+    .then(() => {
+      client
+        .rename(props.myKey, curKey.value)
+        .then((res) => {
+          if (res === 'OK') {
+            ElMessage.success('修改成功')
+            mitter.emit('renameKey', {
+              old: props.myKey,
+              new: curKey.value,
+              hostData: props.hostData,
+            })
+          }
+        })
+        .catch((e) => {
+          ElMessage.error(e.message)
+        })
     })
-  }).catch(e => { })
+    .catch((e) => {})
 }
 const getTTL = () => {
-  client.ttl(props.myKey).then((reply) => {
-    keyTTL.value = reply;
-  }).catch(e => {
-    ElMessage.error('TTL Error: ' + e.message);
-  });
+  client
+    .ttl(props.myKey)
+    .then((reply) => {
+      keyTTL.value = reply
+    })
+    .catch((e) => {
+      ElMessage.error('TTL Error: ' + e.message)
+    })
 }
 
 const saveTTL = () => {
   if (keyTTL.value < 0) {
-    CommonUtils.message(`设置TTL<=0将删除该key，是否确认？`).then(() => {
-      setTTL(true)
-    }).catch(e => { })
+    CommonUtils.message(`设置TTL<=0将删除该key，是否确认？`)
+      .then(() => {
+        setTTL(true)
+      })
+      .catch((e) => {})
   } else {
     setTTL()
   }
 }
 const setTTL = (delKey: boolean = false) => {
-  client.expire(props.myKey, keyTTL.value).then((res) => {
-    if (res) {
-      ElMessage.success('修改成功')
-    } else {
-      ElMessage.error(`【${props.myKey}】 键不存在`)
-    }
-    if (delKey) {
-      mitter.emit('refreshClient')
-    }
-  }).catch(e => {
-    ElMessage.error('TTL Error: ' + e.message);
-  });
+  client
+    .expire(props.myKey, keyTTL.value)
+    .then((res) => {
+      if (res) {
+        ElMessage.success('修改成功')
+      } else {
+        ElMessage.error(`【${props.myKey}】 键不存在`)
+      }
+      if (delKey) {
+        mitter.emit('refreshClient')
+      }
+    })
+    .catch((e) => {
+      ElMessage.error('TTL Error: ' + e.message)
+    })
 }
 
 const presetTTL = () => {
-  client.persist(props.myKey).then(res => {
+  client.persist(props.myKey).then((res) => {
     if (res) {
       ElMessage.success('修改成功')
       refreshing()
@@ -132,8 +154,8 @@ onBeforeMount(() => {
   </el-row>
 </template>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .key-type {
-  text-transform: capitalize
+  text-transform: capitalize;
 }
 </style>

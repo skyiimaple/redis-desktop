@@ -1,16 +1,15 @@
-<script setup lang='ts'>
-import RedisServer from '../../../../redis/RedisServer';
+<script setup lang="ts">
+import RedisServer from '../../../../redis/RedisServer'
 import { computed, onBeforeMount, reactive, ref } from 'vue'
-import CommonUtils from '@/utils/utils';
-import KeyTabHeader from './component/KeyTabHeader.vue';
-import { ElMessage } from 'element-plus';
+import CommonUtils from '@/utils/utils'
+import KeyTabHeader from './component/KeyTabHeader.vue'
+import { ElMessage } from 'element-plus'
 
 interface Zset {
   score: number
   member: string
   uniq: string
 }
-
 
 const props = defineProps<{ data: any }>()
 const tableData = ref<Zset[]>([])
@@ -21,11 +20,11 @@ const dialogVisible = ref<boolean>(false)
 const dialogTitle = ref<string>('添加（Zset）')
 const params = reactive({ fieldName: '', value: '' })
 const loading = ref<boolean>(false)
-let editRowItem: Zset | null;
+let editRowItem: Zset | null
 const search = ref('')
 
 const initData = () => {
-  client.zrevrange(key, 0, 100, 'WITHSCORES').then(res => {
+  client.zrevrange(key, 0, 100, 'WITHSCORES').then((res) => {
     tableData.value = getZsetData(res)
   })
 }
@@ -35,21 +34,21 @@ const filterTableData = computed(() => {
     (data) =>
       !search.value ||
       data.score.toString().toLowerCase().includes(search.value.toLowerCase()) ||
-      data.member.toLowerCase().includes(search.value.toLowerCase())
+      data.member.toLowerCase().includes(search.value.toLowerCase()),
   )
 })
 const getZsetData = (list: any) => {
-  const data: Zset[] = [];
+  const data: Zset[] = []
   if (list?.length) {
     for (var i = 0; i < list.length; i += 2) {
       data.push({
         score: Number(list[i + 1]),
         member: list[i],
         uniq: CommonUtils.randomString(),
-      });
+      })
     }
   }
-  return data;
+  return data
 }
 const createRow = () => {
   dialogVisible.value = true
@@ -70,7 +69,7 @@ const saveRowData = () => {
     return
   }
   loading.value = true
-  client.zadd(key, params.fieldName, params.value).then(res => {
+  client.zadd(key, params.fieldName, params.value).then((res) => {
     if (editRowItem && editRowItem.member !== params.value) {
       client.zrem(key, editRowItem.member)
     }
@@ -89,17 +88,18 @@ const editRowData = (row: Zset) => {
   dialogVisible.value = true
 }
 
-
 // 删除值
 const handleDelete = (row: Zset) => {
-  CommonUtils.message('是否删除当前行数据?', 'error').then(() => {
-    client.zrem(key, row.member).then(res => {
-      if (res === 1) {
-        ElMessage.success('删除成功')
-        initData()
-      }
+  CommonUtils.message('是否删除当前行数据?', 'error')
+    .then(() => {
+      client.zrem(key, row.member).then((res) => {
+        if (res === 1) {
+          ElMessage.success('删除成功')
+          initData()
+        }
+      })
     })
-  }).catch(e => { })
+    .catch((e) => {})
 }
 
 onBeforeMount(() => {
@@ -114,7 +114,11 @@ onBeforeMount(() => {
   </div>
   <div>
     <el-table :data="filterTableData" border>
-      <el-table-column type="index" :label="'ID (Total: ' + filterTableData.length + ')'" width="150">
+      <el-table-column
+        type="index"
+        :label="'ID (Total: ' + filterTableData.length + ')'"
+        width="150"
+      >
       </el-table-column>
       <el-table-column label="Score" prop="score" sortable />
       <el-table-column label="Member" prop="member" sortable />
@@ -123,8 +127,12 @@ onBeforeMount(() => {
           <el-input v-model="search" size="small" placeholder="Type to search" />
         </template>
         <template #default="scope">
-          <el-button size="small" text type="primary" @click="editRowData(scope.row)">修改</el-button>
-          <el-button size="small" text type="danger" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button size="small" text type="primary" @click="editRowData(scope.row)"
+            >修改</el-button
+          >
+          <el-button size="small" text type="danger" @click="handleDelete(scope.row)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -155,5 +163,4 @@ onBeforeMount(() => {
   </el-dialog>
 </template>
 
-<style lang='scss' scoped>
-</style>
+<style lang="scss" scoped></style>
